@@ -160,7 +160,7 @@ def webhook():
             if msg == "1" or msg == "UNITEC" or msg == "unitec" or msg == "Unitec":                
                 user_states[from_number]["step"] = 3
                 return jsonify({
-                    "msg_response": "Vamos a iniciar con tu solicitud.\n\nPrimero necesitamos: *Tu historial académico* 📝 debes descargarlo en *formato PDF* desde:\nventanilla-enlinea.unitec.mx/login",
+                    "msg_response": "Ok, vamos a iniciar.\n\nPrimero comparteme *tu historial académico* 📝 en PDF, si no lo tienes puedes descargarlo desde:\nventanilla-enlinea.unitec.mx/login",
                     "asignar": False,
                     "fin": False
                 }), 200
