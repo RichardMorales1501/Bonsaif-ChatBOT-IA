@@ -94,6 +94,7 @@ def procesar_mensaje(msg):
             "asignar": False,
             "fin": False
         }
+    
 # Ruta para la raíz del servidor
 @app.route("/")
 def home():
