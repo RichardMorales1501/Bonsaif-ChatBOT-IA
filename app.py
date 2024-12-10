@@ -17,7 +17,7 @@ user_states = {}
 
 
 respuestas = {
-    "Abono a capital" : "Puedes hacer abonos a capital y ttienes dos opciones:\n1. Reducir el monto de tus pagos mensuales: Esto te permitirá tener cuotas más bajas cada mes 📉\n2. Reducir el plazo de tu crédito: De esta manera, terminarás de pagar tu crédito en menos tiempo ⏳\nPara hacer tu pago o conocer más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
+    "Abono a capital" : "Puedes hacer abonos a capital y tienes dos opciones:\n1. Reducir el monto de tus pagos mensuales: Esto te permitirá tener cuotas más bajas cada mes 📉\n2. Reducir el plazo de tu crédito: De esta manera, terminarás de pagar tu crédito en menos tiempo ⏳\nPara hacer tu pago o conocer más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Adeudos con universidad": "Si tienes adeudos de algún periodo, no te preocupes.\n\nPuedes realizar una renovación y contemplar esa cantidad dentro del monto solicitado, siempre y cuando tu crédito tenga línea suficiente para cubrirlo 💵",
     "Atencion al cliente": "Por favor, para esta solicitud debes comunicarte con atención al cliente:\n\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx\n\n_Mis compañeras están disponibles de lunes a viernes de 8 hrs a 20 hrs y sábados de p a 14 hrs_\n\n_Por favor, contáctalas lo antes posible para que puedan ayudarte_.",
     "Calculadora un pago":"La calculadora 🧮 en un solo pago (100) es:\n\nUn documento que indica el costo total de tus estudios cuando decides pagar el periodo completo de una sola vez, en lugar de hacerlo en mensualidades.\n\nPor lo general, pagar de esta manera resulta más económico, ya que en pagos crecientes o mensuales las colegiaturas suelen incrementar. 🚨\n\nRecuerda que Laudex realiza el pago del periodo completo y no pagos parcializados. 📈\n\nPuedes descargar tu calculadora en:\n*ventanilla-enlinea.unitec.mx*\n\n_En caso de que la plataforma de UNITEC no te deje descargarla, debes acudir con respaldo económico._",
@@ -79,6 +79,13 @@ def procesar_mensaje(msg):
                 "asignar": False, # No se asigna a un agente
                 "fin": True       # La conversación debe finalizar
             }
+        elif categoria == "Iniciar renovacion":
+            user_states[from_number]["step"] = 2
+            return {
+                "msg_response": "¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. Otra",
+                "asignar": False,
+                "fin": False
+            }
         else:
             # Respuesta para categorías desconocidas
             return {
@@ -139,7 +146,7 @@ def webhook():
             if msg in {"1", "Iniciar renovación", "Iniciar mi renovación", "Quiero renovar"}:
                 user_states[from_number]["step"] = 2
                 return jsonify({
-                    "msg_response": "¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. Otra",
+                    "msg_response": "¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. UNIVA\n5.Otra",
                     "asignar": False,
                     "fin": False
                 }), 200
@@ -158,13 +165,39 @@ def webhook():
                 }), 200
         elif step == 2:
             if msg == "1" or msg == "UNITEC" or msg == "unitec" or msg == "Unitec":                
-                user_states[from_number]["step"] = 3
+                user_states[from_number]["step"] = 9
                 return jsonify({
-                    "msg_response": "Ok, vamos a iniciar.\n\nPrimero comparteme *tu historial académico* 📝 en PDF, si no lo tienes puedes descargarlo desde:\nventanilla-enlinea.unitec.mx/login",
+                    "msg_response": "Ok, para vamos a iniciar.\n\n  Por favor ayudame a subir tus documentos y llenar unos datos en els iguiente link:\nhttps://bit.ly/4e4Zn1r\n\nNecesitaras de *tu historial académico* 📝 y tu calculadora 🔢 en PDF\n\nSi no lo tienes puedes descargarlo desde:\nventanilla-enlinea.unitec.mx/login",
                     "asignar": False,
                     "fin": False
                 }), 200
-            elif msg == "Atras" or msg == "atras" or msg == "0":
+            elif msg == "2" or msg == "UVM" or msg == "uvm" or msg == "Uvm":
+                return jsonify({
+                    "msg_response": "Ok, para vamos a iniciar.\n\nPor favor indicame el monto total que necesitas para cubrir el costo total de tu nuevo periodo",
+                    "asignar": True,
+                    "fin": False
+                }), 200
+            elif msg == "3" or msg == "UPAEP" or msg == "upaep" or msg == "Upaep":
+                return jsonify({
+                    "msg_response": "Ok, para vamos a iniciar.\n\nPor favor compárteme tu kardex con fecha de este mes y estado de cuenta (UNISOF)",
+                    "asignar": True,
+                    "fin": False
+                }), 200
+            elif msg == "4" or msg == "UNIVA" or msg == "univa" or msg == "Univa":
+                user_states[from_number]["step"] = 9
+                return jsonify({
+                    "msg_response": "Para realizar tu inscripción debes visitar las oficinas de cobranza en tu campus UNIVA y firmar tu carga académica con Pedro Hernández.\n\nEstará disponible de lunes a viernes, de 9:00 a 14:00 HRS y de 16:00 a 19:00 HRS. ⏰",
+                    "asignar": False,
+                    "fin": False
+                }), 200
+            elif msg == "5" or msg == "OTRA" or msg == "otra" or msg == "Otra":
+                user_states[from_number]["step"] = 9
+                return jsonify({
+                    "msg_response": "Por favor, indícame el monto total que necesitas para cubrir este periodo (o el próximo) 💰 y comparte tu historial académico 📝.",
+                    "asignar": False,
+                    "fin": False
+                }), 200
+            elif msg == "Atras" or msg == "atras" or msg == "0" or msg == "inicio":
                 user_states[from_number]["step"] = 0
             else:
                 return jsonify({
@@ -172,6 +205,8 @@ def webhook():
                     "asignar": False,
                     "fin": False
                 }), 200
+            
+        
         elif step == 9:
             response = procesar_mensaje(msg)
             return jsonify(response), 200
