@@ -54,7 +54,7 @@ respuestas = {
 }
 
 # Función para procesar el mensaje con el modelo de IA
-def procesar_mensaje(msg):
+def procesar_mensaje(msg, from_number):
     if clf is None:
         return {
             "msg_response": respuestas["Desconocido"],
@@ -68,21 +68,25 @@ def procesar_mensaje(msg):
 
         # Crear la respuesta según la categoría
         if categoria == "Canalizar con asesor":
+            if from_number in user_states:
+                del user_states[from_number]  # Eliminar al usuario de la lista de estados
             return {
                 "msg_response": "Te estamos transferido con un asesor... ",
                 "asignar": True,  # Se asigna a un agente
                 "fin": False      # La conversación sigue activa
             }
         elif categoria == "Despedida":
+            if from_number in user_states:
+                del user_states[from_number]  # Eliminar al usuario de la lista de estados
             return {
                 "msg_response": "Gracias por comunicarte con nosotros, hasta pronto 👋🏻.",
                 "asignar": False, # No se asigna a un agente
-                "fin": True       # La conversación debe finalizar
+                "fin": False       # La conversación debe finalizar
             }
         elif categoria == "Iniciar renovacion":
             user_states[from_number]["step"] = 2
             return {
-                "msg_response": "¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. Otra",
+                "msg_response": "¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. UNIVA\n5. Otra",
                 "asignar": False,
                 "fin": False
             }
@@ -121,10 +125,12 @@ def webhook():
         print(f"Datos recibidos: {data}")
         msg = data.get('data', {}).get('msg', '')
         name = data.get('data', {}).get('name', '')
+        first_name = name.split()[0] if name else ''  # Toma el primer nombre
+
         from_number = data.get('data', {}).get('phone', '')
 
         print(f"Mensaje recibido: {msg}")
-        print(f"Nombre del usuario: {name}")
+        print(f"Primer nombre recibido: {first_name}")
         print(f"Telefono: {from_number}")
 
         # Inicializar el estado del usuario si es necesario
@@ -137,7 +143,7 @@ def webhook():
         if step == 0:
             user_states[from_number]["step"] = 1
             return jsonify({
-                "msg_response": f"Hola *{name}*\n\nBienvenido a Renovaciones Laudex 💚\n\n*¿En qué podemos ayudarte?*\n\n1. Iniciar renovación\n2. Seguimiento a solicitud\n3. Dudas sobre pagos\n4. Otra consulta",
+                "msg_response": f"Hola *{first_name}*\n\nBienvenido a Renovaciones Laudex 💚\n\n*¿En qué podemos ayudarte?*\n\n1. Iniciar renovación\n2. Seguimiento a solicitud\n3. Dudas sobre pagos\n4. Otra consulta",
                 "asignar": False,
                 "fin": False
             }), 200
@@ -146,7 +152,7 @@ def webhook():
             if msg in {"1", "Iniciar renovación", "Iniciar mi renovación", "Quiero renovar"}:
                 user_states[from_number]["step"] = 2
                 return jsonify({
-                    "msg_response": "¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. UNIVA\n5.Otra",
+                    "msg_response": "¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. UNIVA\n5. Otra",
                     "asignar": False,
                     "fin": False
                 }), 200
@@ -167,7 +173,7 @@ def webhook():
             if msg == "1" or msg == "UNITEC" or msg == "unitec" or msg == "Unitec":                
                 user_states[from_number]["step"] = 9
                 return jsonify({
-                    "msg_response": "Ok, para vamos a iniciar.\n\n  Por favor ayudame a subir tus documentos y llenar unos datos en els iguiente link:\nhttps://bit.ly/4e4Zn1r\n\nNecesitaras de *tu historial académico* 📝 y tu calculadora 🔢 en PDF\n\nSi no lo tienes puedes descargarlo desde:\nventanilla-enlinea.unitec.mx/login",
+                    "msg_response": "Ok, para vamos a iniciar.\n\nPor favor ayudame a subir tus documentos y llenar algunos unos datos en el iguiente link:\n\nhttps://bit.ly/4e4Zn1r\n\nNecesitaras de *tu historial académico* 📝 y tu calculadora 🔢 en PDF\n\nSi no lo tienes puedes descargarlo desde:\nventanilla-enlinea.unitec.mx/login",
                     "asignar": False,
                     "fin": False
                 }), 200
@@ -191,25 +197,25 @@ def webhook():
                     "fin": False
                 }), 200
             elif msg == "5" or msg == "OTRA" or msg == "otra" or msg == "Otra":
-                user_states[from_number]["step"] = 9
                 return jsonify({
                     "msg_response": "Por favor, indícame el monto total que necesitas para cubrir este periodo (o el próximo) 💰 y comparte tu historial académico 📝.",
-                    "asignar": False,
+                    "asignar": True,
                     "fin": False
                 }), 200
             elif msg == "Atras" or msg == "atras" or msg == "0" or msg == "inicio":
                 user_states[from_number]["step"] = 0
             else:
                 return jsonify({
-                    "msg_response": "Responde con una opción válida:\n¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. Otra\n\n0. Regresar al inicio",
+                    "msg_response": "Responde con una opción válida:\n¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. UNIVA\n5. Otra\n\n0. Regresar al inicio",
                     "asignar": False,
                     "fin": False
                 }), 200
             
         
         elif step == 9:
-            response = procesar_mensaje(msg)
+            response = procesar_mensaje(msg, from_number)
             return jsonify(response), 200
+        
 
     except Exception as e:
         print(f"Error procesando la solicitud: {e}")
