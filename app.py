@@ -41,7 +41,7 @@ respuestas = {
     "Lugar laudex" : "Bosque de Radiatas 42 – PH-02\nCol. Bosques de las Lomas, CDMX, C.P. 05120\n\nhttps://maps.app.goo.gl/sazpAQV6sNmLCJNw6",
     "Monto que necesitas": "El monto que necesitas solicitar *dependerá totalmente de tus necesidades y de los costos de tu universidad* 📚\n\nTe recomiendo considerar lo siguiente:\n\nSolicita el monto que cubra el total de tu periodo actual o el nuevo periodo.\nRecuerda que *Laudex no realiza pagos mensuales, sino que cubre el pago total del periodo*.\n\nPor ejemplo, si tu periodo es semestral, el crédito cubrirá todas las mensualidades juntas 💸",
     "Politica de pagos": "Todos los pagos se realizan únicamente el primer día de cada mes. Esta política nos ayuda a mantener un proceso de gestión eficiente. Te recomendamos que planifiques tus pagos en función de esta fecha. ¡Gracias por tu comprensión!",
-    "Portal" : "En el nuevo portal del cliente 📱\nportal.laudex.mx\nPodras encontrar desde fecha de pagos, donde y cómo pagar, estados de cuenta, últimos pagos y más datos de tu crédito\n\nPara más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
+    "Portal" : "¡Conoce el nuevo portal del cliente! 📱\nEn portal.laudex.mx puedes acceder a toda la información de tu crédito en un solo lugar:\n- Fecha de tus pagos 📅\n- Cómo y dónde realizar tus pagos 💳\n- Estados de cuenta detallados 📂\n- Historial de tus últimos pagos 🧾\n- Y mucho más.\n\n¿Tienes dudas o necesitas ayuda? Estamos aquí para apoyarte:\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx\n\n💡 _Estamos disponibles de lunes a viernes de 8:00 a 20:00 hrs y sábados de 9:00 a 14:00 hrs_.",
     "Postventa" : "Para poder brindar acceso por favor, envíanos un correo a\n\npostventa@laudex.mx\n\nIndicando tu nombre completo y nuestro equipo te asistirá para que recuperes tus credenciales y puedas acceder al portal 🔐",
     "Problemas con documentos": "Si no encuentras tu pagaré, busca un correo con el asunto 'FIRMAMEX' en tu bandeja de entrada o spam. Si no lo encuentras, contáctanos.",
     "Problemas con firmamex" : "*¿Has buscado el documento como “FIRMAMEX” en tu bandeja de entrada y en la carpeta de spam?*\n\nEl pagaré se envía primero al alumno(a) y, una vez firmado, se enviará al obligado solidario.\nA veces, por razones de seguridad, el correo puede terminar en la bandeja de spam o en correos no deseados o spam ✍🏻",
@@ -50,7 +50,10 @@ respuestas = {
     "Que es": "Una renovación en Laudex es *cuando solicitas acceder a una parte de tu línea de crédito disponible*\n\n Piensa en ello como cuando usas una tarjeta de crédito (TDC)\n\n Por ejemplo, si tienes una TDC 💳 con un límite de $10,000 y ya has utilizado $6,000, te quedan $4,000 disponibles para gastar\n\nSi decides hacer una renovación, puedes solicitar parte de esos $4,000 para financiar un nuevo periodo de estudios💶",
     "Reflejo de pagos": "Tu pago se refleja en un plazo de 24 horas hábiles ⏳\n\nPara más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Se necesta reenviarlo": "¡Entendido! Para ayudarte mejor, ¿podrías por favor hacer lo siguiente?\n\n1. Escríbeme tu correo electrónico aquí en el chat.\n2. Tómale una captura de pantalla a tu bandeja de spam y correos no deseados y compártela conmigo.\n3. Ayúdame enviando un correo de prueba a renovaciones@laudex.mx con el asunto: PRUEBA y tu nombre completo.\n\nSi tienes un obligado solidario, pídele que haga lo mismo:\n\n4. Comparte su correo y una captura de pantalla de su bandeja de entrada, spam y/o no deseados.\n5. Pídeles que también envíen un correo de prueba al mismo correo electrónico.\n\nCon esta información, podremos ayudarte a resolverlo lo antes posible 😊",
-    "Tiempo de respuesta renovaciones": "La respuesta a tu trámite será enviada a tu correo electrónico en un plazo máximo de 72 horas.\n\nTe pedimos, por favor, estar pendiente de tu bandeja de entrada y también revisar tu carpeta de spam o correos no deseados. ✉️\n\nSi después de este tiempo no has recibido respuesta, por favor responde “*Pasaron más de 72 horas*”, y con gusto revisaremos tu solicitud a detalle. 🕵",
+    "Tiempo de respuesta renovaciones": "La respuesta a tu trámite será enviada a tu correo electrónico en un plazo máximo de 72 horas.\n\nTe pedimos, por favor, estar pendiente de tu bandeja de entrada y también revisar tu carpeta de spam o correos no deseados. ✉️\n\nSi después de este tiempo no has recibido respuesta, por favor responde *Pasaron más de 72 horas*, y con gusto revisaremos tu solicitud a detalle. 🕵",
+    "Que duda": "Con gusto puedo ayudarte, aquí estamos para resolver tus dudas. 😊\n\nPara poder ayudarte mejor, ¿me puedes contar un poquito más? Por ejemplo: ¿es sobre pagos, renovaciones, documentos, o algo más? 🎓💰",
+    "Fecha virtual": "La fecha de depósito es el día en que deseas que se realice el pago a tu universidad. 🎓\n\nPor ejemplo, si tu periodo comienza el 1 de enero, puedes colocar una fecha cercana como referencia.🚨\n\nRecuerda: Laudex programa los pagos con base en esta fecha, pero la confirmación también depende de tu universidad. Si tienes dudas o necesitas ayuda escribe *quiero hablar con un ejecutivo* para poder ser atendido por un especialista 😊",
+    "Saludo inicial": "Hola soy *Reno* 🦌\n\nTu asistente virtual de Renovaciones Laudex\n\n*¿Cómo puedo ayudarte?*",
 }
 
 # Función para procesar el mensaje con el modelo de IA
@@ -170,33 +173,33 @@ def webhook():
                     "fin": False
                 }), 200
         elif step == 2:
-            if msg == "1" or msg == "UNITEC" or msg == "unitec" or msg == "Unitec":                
+            if msg == "1" or msg == "UNITEC" or msg == "unitec" or msg == "Unitec" or msg == "1. UNITEC":                
                 user_states[from_number]["step"] = 9
                 return jsonify({
-                    "msg_response": "Ok, para vamos a iniciar.\n\nPor favor ayudame a subir tus documentos y llenar algunos unos datos en el iguiente link:\n\nhttps://bit.ly/4e4Zn1r\n\nNecesitaras de *tu historial académico* 📝 y tu calculadora 🔢 en PDF\n\nSi no lo tienes puedes descargarlo desde:\nventanilla-enlinea.unitec.mx/login",
+                    "msg_response": "Ok, para vamos a iniciar.\n\nPor favor ayudame a subir tus documentos y llenar algunos unos datos en el iguiente link:\n\nhttps://bit.ly/4e4Zn1r\n\nNecesitaras de *tu historial académico* 📝 y tu *calculadora en un solo pago (100)* 🔢 en PDF\n\nSi no lo tienes puedes descargarlo desde:\nventanilla-enlinea.unitec.mx/login",
                     "asignar": False,
                     "fin": False
                 }), 200
-            elif msg == "2" or msg == "UVM" or msg == "uvm" or msg == "Uvm":
+            elif msg == "2" or msg == "UVM" or msg == "uvm" or msg == "Uvm" or msg == "2. UVM":
                 return jsonify({
                     "msg_response": "Ok, para vamos a iniciar.\n\nPor favor indicame el monto total que necesitas para cubrir el costo total de tu nuevo periodo",
                     "asignar": True,
                     "fin": False
                 }), 200
-            elif msg == "3" or msg == "UPAEP" or msg == "upaep" or msg == "Upaep":
+            elif msg == "3" or msg == "UPAEP" or msg == "upaep" or msg == "Upaep" or msg == "3. UPAEP":
                 return jsonify({
                     "msg_response": "Ok, para vamos a iniciar.\n\nPor favor compárteme tu kardex con fecha de este mes y estado de cuenta (UNISOF)",
                     "asignar": True,
                     "fin": False
                 }), 200
-            elif msg == "4" or msg == "UNIVA" or msg == "univa" or msg == "Univa":
+            elif msg == "4" or msg == "UNIVA" or msg == "univa" or msg == "Univa" or msg == "4. UNIVA":
                 user_states[from_number]["step"] = 9
                 return jsonify({
                     "msg_response": "Para realizar tu inscripción debes visitar las oficinas de cobranza en tu campus UNIVA y firmar tu carga académica con Pedro Hernández.\n\nEstará disponible de lunes a viernes, de 9:00 a 14:00 HRS y de 16:00 a 19:00 HRS. ⏰",
                     "asignar": False,
                     "fin": False
                 }), 200
-            elif msg == "5" or msg == "OTRA" or msg == "otra" or msg == "Otra":
+            elif msg == "5" or msg == "OTRA" or msg == "otra" or msg == "Otra" or msg == "5. Otra":
                 return jsonify({
                     "msg_response": "Por favor, indícame el monto total que necesitas para cubrir este periodo (o el próximo) 💰 y comparte tu historial académico 📝.",
                     "asignar": True,
