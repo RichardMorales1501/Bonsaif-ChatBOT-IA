@@ -227,4 +227,6 @@ def webhook():
 
 if __name__ == '__main__':
     # Configura el puerto en el que se ejecutará la aplicación
-    app.run(host='0.0.0.0', port=2000, debug=True)
+    # Obtener el puerto desde las variables de entorno
+    port = int(os.environ.get('PORT', 2000))  # Usa 2000 si la variable PORT no está definida
+    app.run(host='0.0.0.0', port=port, debug=True)
