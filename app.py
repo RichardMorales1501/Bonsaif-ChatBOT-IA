@@ -87,7 +87,7 @@ def procesar_mensaje(msg, from_number):
             return {
                 "msg_response": "Gracias por comunicarte con nosotros, hasta pronto 👋🏻.",
                 "asignar": False, # No se asigna a un agente
-                "fin": False       # La conversación debe finalizar
+                "fin": True       # La conversación debe finalizar
             }
         elif categoria == "Iniciar renovacion":
             user_states[from_number]["step"] = 2
