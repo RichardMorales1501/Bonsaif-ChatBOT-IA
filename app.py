@@ -3,6 +3,9 @@ import joblib
 import os
 
 app = Flask(__name__)
+port = int(os.environ.get('PORT', 2000))  # Usa 2000 si la variable PORT no está definida
+
+
 
 # Cargar el modelo entrenado
 MODEL_PATH = "modelo_entrenado.pkl"
@@ -228,5 +231,4 @@ def webhook():
 if __name__ == '__main__':
     # Configura el puerto en el que se ejecutará la aplicación
     # Obtener el puerto desde las variables de entorno
-    port = int(os.environ.get('PORT', 2000))  # Usa 2000 si la variable PORT no está definida
     app.run(host='0.0.0.0', port=port, debug=True)
