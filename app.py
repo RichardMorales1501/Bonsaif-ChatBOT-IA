@@ -36,6 +36,7 @@ respuestas = {
     "Domiciliar" : "Domiciliar 💳 es muy fácil y puedes hacerlo directamente en\nportal.laudex.mx\n\n*Beneficios de domiciliar*:\n- No hay comisión por forma de pago.\n- Evitas ir al banco a pagar en caja.\n- No necesitas ingresar a tu app móvil bancaria cada mes.\n- El cargo se genera automáticamente el primer día hábil del mes.\n- La confirmación de tu pago se procesa en un máximo de 24 horas hábiles\n- Puedes domiciliar cualquier cuentay/o tarjeta de de debito.\n\nPara más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Donde HA": "*El proceso puede variar según tu universidad* 👨🏻‍💻\n\nGeneralmente, puedes descargarlo directamente desde la plataforma en línea de la universidad.\n\nEn caso de que no sea posible, deberás acudir al campus y solicitarlo personalmente 😊",
     "Dudas pago": "El ajuste en tu pago mensual se realiza para simplificar tu experiencia y evitar que tengas que hacer pagos dobles. Esto significa que, con tu nuevo pago mensual, estás cubriendo tanto la cantidad pendiente de tu crédito anterior como el nuevo monto que solicitaste en la renovación 💶",
+    "Fecha virtual": "La fecha de depósito es el día en que deseas que se realice el pago a tu universidad. 🎓\n\nPor ejemplo, si tu periodo comienza el 1 de enero, puedes colocar una fecha cercana como referencia.🚨\n\nRecuerda: Laudex programa los pagos con base en esta fecha, pero la confirmación también depende de tu universidad. Si tienes dudas o necesitas ayuda escribe *quiero hablar con un ejecutivo* para poder ser atendido por un especialista 😊",
     "Informacion comercial" : "",
     "Informacion del pago" : "El monto que debes pagar se encuentra en el pagaré que se te envía a ti y a tu obligado solidario por correo electrónico💶\nEl monto del pago mensual está resaltado en amarillo, y también encontrarás el mes específico en el que debes realizar el pago.\nPara hacer tu pago o conocer más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Informacion financiera": "Puedes consultar tus montos, saldos y movimientos en tu portal de cliente: https://portal.laudex.mx/login.",
@@ -53,10 +54,9 @@ respuestas = {
     "Que es": "Una renovación en Laudex es *cuando solicitas acceder a una parte de tu línea de crédito disponible*\n\n Piensa en ello como cuando usas una tarjeta de crédito (TDC)\n\n Por ejemplo, si tienes una TDC 💳 con un límite de $10,000 y ya has utilizado $6,000, te quedan $4,000 disponibles para gastar\n\nSi decides hacer una renovación, puedes solicitar parte de esos $4,000 para financiar un nuevo periodo de estudios💶",
     "Reflejo de pagos": "Tu pago se refleja en un plazo de 24 horas hábiles ⏳\n\nPara más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Se necesta reenviarlo": "¡Entendido! Para ayudarte mejor, ¿podrías por favor hacer lo siguiente?\n\n1. Escríbeme tu correo electrónico aquí en el chat.\n2. Tómale una captura de pantalla a tu bandeja de spam y correos no deseados y compártela conmigo.\n3. Ayúdame enviando un correo de prueba a renovaciones@laudex.mx con el asunto: PRUEBA y tu nombre completo.\n\nSi tienes un obligado solidario, pídele que haga lo mismo:\n\n4. Comparte su correo y una captura de pantalla de su bandeja de entrada, spam y/o no deseados.\n5. Pídeles que también envíen un correo de prueba al mismo correo electrónico.\n\nCon esta información, podremos ayudarte a resolverlo lo antes posible 😊",
+    "Saludo inicial": "Hola soy *Reno* 🦌\n\nTu asistente virtual de Renovaciones Laudex\n\n*¿Cómo puedo ayudarte?*",
     "Tiempo de respuesta renovaciones": "La respuesta a tu trámite será enviada a tu correo electrónico en un plazo máximo de 72 horas.\n\nTe pedimos, por favor, estar pendiente de tu bandeja de entrada y también revisar tu carpeta de spam o correos no deseados. ✉️\n\nSi después de este tiempo no has recibido respuesta, por favor responde *Pasaron más de 72 horas*, y con gusto revisaremos tu solicitud a detalle. 🕵",
     "Que duda": "Con gusto puedo ayudarte, aquí estamos para resolver tus dudas. 😊\n\nPara poder ayudarte mejor, ¿me puedes contar un poquito más? Por ejemplo: ¿es sobre pagos, renovaciones, documentos, o algo más? 🎓💰",
-    "Fecha virtual": "La fecha de depósito es el día en que deseas que se realice el pago a tu universidad. 🎓\n\nPor ejemplo, si tu periodo comienza el 1 de enero, puedes colocar una fecha cercana como referencia.🚨\n\nRecuerda: Laudex programa los pagos con base en esta fecha, pero la confirmación también depende de tu universidad. Si tienes dudas o necesitas ayuda escribe *quiero hablar con un ejecutivo* para poder ser atendido por un especialista 😊",
-    "Saludo inicial": "Hola soy *Reno* 🦌\n\nTu asistente virtual de Renovaciones Laudex\n\n*¿Cómo puedo ayudarte?*",
 }
 
 # Función para procesar el mensaje con el modelo de IA
@@ -94,6 +94,12 @@ def procesar_mensaje(msg, from_number):
             return {
                 "msg_response": "¿En qué universidad estudias? \n1. UNITEC\n2. UVM\n3. UPAEP\n4. UNIVA\n5. Otra",
                 "asignar": False,
+                "fin": False
+            }
+        elif categoria == "Cambiar correo":
+            return {
+                "msg_response": "Para actualizar tu correo 📧 sigue estos pasos:\n\n1. Graba un video: Menciona tu *nombre completo*, el número de *contrato* y si eres estudiante u obligado solidario, tambien menciona *el correo anterior y el nuevo*.\n2. Envíanos tu video por este medio.\n\n⏳ En un plazo máximo de 48 horas hábiles, recibirás el pagaré en tu nuevo correo.😊",
+                "asignar": True,
                 "fin": False
             }
         else:
