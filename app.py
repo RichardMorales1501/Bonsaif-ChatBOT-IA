@@ -185,8 +185,7 @@ def webhook():
             if msg == "1" or msg == "UNITEC" or msg == "unitec" or msg == "Unitec" or msg == "1. UNITEC":                
                 user_states[from_number]["step"] = 9
                 return jsonify({
-                    #"msg_response": "Ok, para vamos a iniciar.\n\nPor favor ayudame a subir tus documentos y llenar algunos unos datos en el iguiente link:\n\nhttps://bit.ly/4e4Zn1r\n\nNecesitaras de *tu historial académico* 📝 y tu *calculadora en un solo pago (100)* 🔢 en PDF\n\nSi no lo tienes puedes descargarlo desde:\nventanilla-enlinea.unitec.mx/login",
-                    "msg_response": "¡Hola! 📚 Las renovaciones de crédito para UNITEC comenzarán el 6 de enero del 2025.\n\nA partir de esa fecha, podrás descargar tu calculadora de pagos e historial académico para iniciar tu proceso. 🎓",
+                    "msg_response": "Ok, para vamos a iniciar.\n\nPor favor ayudame a subir tus documentos y llenar algunos unos datos en el iguiente link:\n\nhttps://bit.ly/4e4Zn1r\n\nNecesitaras de *tu historial académico* 📝 y tu *calculadora en un solo pago (100)* 🔢 en PDF\n\nSi no lo tienes puedes descargarlo desde:\nventanilla-enlinea.unitec.mx/login",
                     "asignar": False,
                     "fin": False
                 }), 200
