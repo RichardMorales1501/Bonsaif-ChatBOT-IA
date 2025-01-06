@@ -98,7 +98,7 @@ def procesar_mensaje(msg, from_number):
             }
         elif categoria == "Cambiar correo":
             return {
-                "msg_response": "Para actualizar tu correo 📧 sigue estos pasos:\n\n1. Graba un video: Menciona tu *nombre completo*, el número de *contrato* y si eres estudiante u obligado solidario, tambien menciona *el correo anterior y el nuevo*.\n2. Envíanos tu video por este medio.\n\n⏳ En un plazo máximo de 48 horas hábiles, recibirás el pagaré en tu nuevo correo.😊",
+                "msg_response": "Para actualizar tu correo 📧 sigue estos pasos :\n\n1. Graba un video: Menciona tu *nombre completo*, el número de *contrato* y si eres estudiante u obligado solidario, tambien menciona *el correo anterior y el nuevo*.\n2. Envíanos tu video por este medio.\n\n⏳ En un plazo máximo de 48 horas hábiles, recibirás el pagaré en tu nuevo correo.😊",
                 "asignar": True,
                 "fin": False
             }
