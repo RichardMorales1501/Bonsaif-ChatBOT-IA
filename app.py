@@ -188,7 +188,7 @@ def webhook():
             elif msg == "2" or msg == "3" or msg == "4" or msg == "2. Seguimiento a solicitud" or msg == "3. Dudas sobre pagos" or msg == "4. Otra consulta" or msg == "Seguimiento a solicitud" or msg == "Dudas sobre pagos" or msg == "Otra consulta":                
                 user_states[from_number]["step"] = 9
                 return jsonify({
-                    "msg_response": "Hola *{first_name}* soy *Reno* 🦌\n\nTu asistente virtual de Renovaciones Laudex\n\n*¿Cómo puedo ayudarte?*",
+                    "msg_response": f"Hola *{first_name}* soy *Reno* 🦌\n\nTu asistente virtual de Renovaciones Laudex\n\n*¿Cómo puedo ayudarte?*",
                     "asignar": False,
                     "fin": False
                 }), 200
