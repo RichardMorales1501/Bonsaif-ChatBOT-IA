@@ -59,7 +59,7 @@ respuestas = {
     "Reflejo de pagos": "Tu pago se refleja en un plazo de 24 horas hábiles ⏳\n\nPara más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Respaldo Economico": "Buenas noticias! 🎓✨ Si te indicamos que debías comunicarte con alguien para liberar tus materias, *significa que el proceso con Laudex ya concluyó exitosamente*. ✅\n\n📚 Ahora el siguiente paso depende directamente de UNITEC. A veces, por la carga de trabajo, el personal universitario puede tardar un poco en responder, así que te pedimos tener un poco de paciencia. 🕒💬\n\n⚠️ Si después de unos días no recibes respuesta, te sugerimos acudir directamente a tu campus o comunicarte nuevamente con ellos. 🏫📞\n\n_Lamentablemente, este proceso ya no está en manos de Laudex, sino que corresponde completamente a UNITEC_.\n\n¡Ánimo! Seguro pronto tendrás una respuesta. 😊🚀",
     "Se necesta reenviarlo": "¡Entendido! Para ayudarte mejor, ¿podrías por favor hacer lo siguiente?\n\n1. Escríbeme tu correo electrónico aquí en el chat.\n2. Tómale una captura de pantalla a tu bandeja de spam y correos no deseados y compártela conmigo.\n3. Ayúdame enviando un correo de prueba a renovaciones@laudex.mx con el asunto: PRUEBA y tu nombre completo.\n\nSi tienes un obligado solidario, pídele que haga lo mismo:\n\n4. Comparte su correo y una captura de pantalla de su bandeja de entrada, spam y/o no deseados.\n5. Pídeles que también envíen un correo de prueba al mismo correo electrónico.\n\nCon esta información, podremos ayudarte a resolverlo lo antes posible 😊",
-    "Saludo inicial": "Hola soy *Reno* 🦌\n\nTu asistente virtual de Renovaciones Laudex\n\n*¿Cómo puedo ayudarte?*",
+    "Saludo inicial": "*¿Cómo puedo ayudarte?*",
     "Tiempo de respuesta renovaciones": "La respuesta a tu trámite será enviada a tu correo electrónico en un plazo máximo de 72 horas.\n\nTe pedimos, por favor, estar pendiente de tu bandeja de entrada y también revisar tu carpeta de spam o correos no deseados. ✉️\n\nSi después de este tiempo no has recibido respuesta, por favor responde *Pasaron más de 72 horas*, y con gusto revisaremos tu solicitud a detalle. 🕵",
     "Que duda": "Con gusto puedo ayudarte, aquí estamos para resolver tus dudas. 😊\n\nPara poder ayudarte mejor, ¿me puedes contar un poquito más? Por ejemplo: ¿es sobre pagos, renovaciones, documentos, o algo más? 🎓💰",
 }
@@ -227,7 +227,7 @@ def webhook():
                 }), 200
             elif msg == "5" or msg == "OTRA" or msg == "otra" or msg == "Otra" or msg == "5. Otra":
                 return jsonify({
-                    "msg_response": "Por favor, indícame el monto total que necesitas para cubrir este periodo (o el próximo) 💰 y comparte tu historial académico 📝.",
+                    "msg_response": "Por favor, indícame el monto total que necesitas para cubrir este periodo (o el próximo) 💰 y compárteme tu historial académico 📝.",
                     "asignar": True,
                     "fin": False
                 }), 200
