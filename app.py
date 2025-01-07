@@ -1,6 +1,10 @@
 from flask import Flask, request, jsonify
 import joblib
 import os
+from datetime import datetime
+import pytz
+
+
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 2000))  # Usa 2000 si la variable PORT no está definida
@@ -63,6 +67,14 @@ respuestas = {
     "Tiempo de respuesta renovaciones": "La respuesta a tu trámite será enviada a tu correo electrónico en un plazo máximo de 72 horas.\n\nTe pedimos, por favor, estar pendiente de tu bandeja de entrada y también revisar tu carpeta de spam o correos no deseados. ✉️\n\nSi después de este tiempo no has recibido respuesta, por favor responde *Pasaron más de 72 horas*, y con gusto revisaremos tu solicitud a detalle. 🕵",
     "Que duda": "Con gusto puedo ayudarte, aquí estamos para resolver tus dudas. 😊\n\nPara poder ayudarte mejor, ¿me puedes contar un poquito más? Por ejemplo: ¿es sobre pagos, renovaciones, documentos, o algo más? 🎓💰",
 }
+# Función para validar el horario
+def esta_en_horario():
+    tz = pytz.timezone("America/Mexico_City")  # Define la zona horaria
+    current_time = datetime.now(tz).time()
+    start_time = datetime.strptime("08:00", "%H:%M").time()
+    end_time = datetime.strptime("20:00", "%H:%M").time()
+    return start_time <= current_time <= end_time
+
 
 # Función para procesar el mensaje con el modelo de IA
 def procesar_mensaje(msg, from_number):
@@ -79,13 +91,20 @@ def procesar_mensaje(msg, from_number):
 
         # Crear la respuesta según la categoría
         if categoria == "Canalizar con asesor":
-            if from_number in user_states:
-                del user_states[from_number]  # Eliminar al usuario de la lista de estados
-            return {
-                "msg_response": "Te estamos transferido con un asesor... ",
-                "asignar": True,  # Se asigna a un agente
-                "fin": False      # La conversación sigue activa
-            }
+            if esta_en_horario():  # Verificar si estamos dentro del horario de atención
+                if from_number in user_states:
+                    del user_states[from_number]  # Eliminar al usuario de la lista de estados
+                return {
+                    "msg_response": "Te estamos transfiriendo con un asesor... ",
+                    "asignar": True,  # Se asigna a un agente
+                    "fin": False      # La conversación sigue activa
+                }
+            else:
+                return {
+                    "msg_response": "📚✨ ¡Estamos tomando un pequeño descanso! 😴\n\nDetonar la educación no es sencillo, pero pronto regresaremos con toda la energía y entusiasmo para seguir apoyándote en tu camino. 🚀💚\n\n🕒 Nuestro horario de atención es de 8:00 AM a 8:00 PM, de lunes a viernes. ⏰\n\nMientras tanto, por favor indícanos:\n- 📝 Tu nombre completo\n- 🎓 Universidad\n- 🏫 Campus\n\nEn cuanto estemos de regreso, nos pondremos en contacto contigo. 😊📲",
+                    "asignar": True,
+                    "fin": True  # La conversación finaliza temporalmente
+                }
         elif categoria == "Despedida":
             if from_number in user_states:
                 del user_states[from_number]  # Eliminar al usuario de la lista de estados
