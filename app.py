@@ -6,10 +6,43 @@ import pytz
 import time
 import threading
 
+segundoplano = False  # Variable para controlar el hilo en segundo plano
+
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 2000))  # Usa 2000 si la variable PORT no está definida
 # Estado inicial de los usuarios
+
+user_states = {}
+MAX_INACTIVITY = 2 * 60  # 5 minutos en segundos
+
+def revisar_sesiones():
+    print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")
+
+    while True:
+        current_time = time.time()
+        print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")
+
+        for from_number, user_data in list(user_states.items()):
+            last_active = user_data.get('last_active', current_time)
+            tiempo_inactivo = current_time - last_active
+
+            print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
+
+            if tiempo_inactivo > MAX_INACTIVITY:
+                print(f"🛑 Sesión expirada para {from_number}. Enviando mensaje de expiración...")
+                user_states[from_number]['step'] = 10
+                user_states[from_number]['expirado'] = True  # Marcar como expirado
+
+                # Simula el envío del mensaje a través del webhook
+                enviar_mensaje_expiracion(from_number)
+
+                # Eliminar usuario después de expirar
+                del user_states[from_number]
+
+        print("💓 Hilo 'revisar_sesiones' sigue activo...")
+        time.sleep(60)  # Espera 60 segundos antes de la siguiente revisión
+
 
 # ✅ Función para iniciar el hilo
 def iniciar_hilo_revisor():
@@ -32,9 +65,6 @@ else:
     clf = None
     print("Error: Modelo no encontrado. Asegúrate de que 'modelo_entrenado.pkl' exista.")
 
-user_states = {}
-MAX_INACTIVITY = 2 * 60  # 5 minutos en segundos
-segundoplano = False  # Variable para controlar el hilo en segundo plano
 
 
 respuestas = {
@@ -100,35 +130,6 @@ def enviar_mensaje_expiracion(from_number):
             print(f"✅ Respuesta simulada del webhook: {response.get_json()}")
     except Exception as e:
         print(f"❌ Error al enviar mensaje de expiración: {e}")
-
-
-
-def revisar_sesiones():
-    print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")
-
-    while True:
-        current_time = time.time()
-        print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")
-
-        for from_number, user_data in list(user_states.items()):
-            last_active = user_data.get('last_active', current_time)
-            tiempo_inactivo = current_time - last_active
-
-            print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
-
-            if tiempo_inactivo > MAX_INACTIVITY:
-                print(f"🛑 Sesión expirada para {from_number}. Enviando mensaje de expiración...")
-                user_states[from_number]['step'] = 10
-                user_states[from_number]['expirado'] = True  # Marcar como expirado
-
-                # Simula el envío del mensaje a través del webhook
-                enviar_mensaje_expiracion(from_number)
-
-                # Eliminar usuario después de expirar
-                del user_states[from_number]
-
-        print("💓 Hilo 'revisar_sesiones' sigue activo...")
-        time.sleep(60)  # Espera 60 segundos antes de la siguiente revisión
 
 # Función para validar el horario
 def esta_en_horario():
