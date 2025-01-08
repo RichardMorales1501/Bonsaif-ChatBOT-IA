@@ -117,15 +117,18 @@ def revisar_sesiones():
 
 # Función para procesar el mensaje con el modelo de IA
 def procesar_mensaje(msg, from_number):
-        # 🚨 Revisar sesiones con cada interacción
+    # 🚨 Revisar sesiones con cada interacción
     usuarios_expirados = revisar_sesiones()
 
-    # 🕒 Manejar usuarios con sesión expirada
-    for usuario_expirado in usuarios_expirados:
+    # 🕒 Si hay usuarios con sesión expirada, enviamos su mensaje primero
+    if usuarios_expirados:
+        usuario_expirado = usuarios_expirados[0]  # Tomar el primer usuario expirado
         response = send_inactivity_message(usuario_expirado)
         print(f"📤 Mensaje de inactividad enviado al usuario {usuario_expirado}: {response['msg_response']}")
         del user_states[usuario_expirado]  # Eliminar al usuario después de enviar el mensaje
-        # 🚨 Actualizar tiempo de última actividad para el usuario actual
+        
+        # 🔑 Enviar respuesta HTTP para el usuario expirado
+        return jsonify(response), 200
 
     if clf is None:
         return {
