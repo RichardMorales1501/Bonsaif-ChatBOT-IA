@@ -76,6 +76,21 @@ respuestas = {
 }
 
 
+def send_inactivity_message(from_number):
+    first_name = user_states.get(from_number, {}).get('first_name', 'Usuario')
+    print(f"📤 Enviando mensaje de sesión expirada al usuario {from_number}.")
+    
+    # Aquí deberías llamar a la función que realmente envía el mensaje al usuario.
+    # Simularemos el envío con un print.
+    mensaje = f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬"
+    print(f"➡️ Mensaje enviado a {from_number}: {mensaje}")
+    
+    # Opcionalmente, si tu sistema utiliza algún mecanismo de respuesta JSON:
+    return {
+        "msg_response": mensaje,
+        "asignar": False,
+        "fin": True
+    }
 
 # Función para validar el horario
 def esta_en_horario():
@@ -96,6 +111,10 @@ def revisar_sesiones():
         if tiempo_inactivo > MAX_INACTIVITY:
             print(f"🛑 Sesión expirada para {from_number}. Moviendo al step 10.")
             user_states[from_number]['step'] = 10  # Asignar step 10 en lugar de 'expired'
+            # Enviar mensaje automáticamente
+            send_inactivity_message(from_number)  
+            # Eliminar al usuario después de enviar el mensaje
+            del user_states[from_number]
 
 
 # Función para procesar el mensaje con el modelo de IA
@@ -192,6 +211,8 @@ def home():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     try:
+        hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
+        hilo_revisor.start()
         print(f"Encabezados de la solicitud: {dict(request.headers)}")
 
         # Obtener los datos enviados por Bonsai
@@ -209,9 +230,6 @@ def webhook():
         print(f"Mensaje recibido: {msg}")
         print(f"Primer nombre recibido: {first_name}")
         print(f"Telefono: {from_number}")
-
-        hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
-        hilo_revisor.start()
 
 
         # 🚨 Inicializar o actualizar tiempo de última actividad 🚨
