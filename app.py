@@ -3,12 +3,16 @@ import joblib
 import os
 from datetime import datetime
 import pytz
+import time
+import threading
+
+
 
 
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 2000))  # Usa 2000 si la variable PORT no está definida
-
+# Estado inicial de los usuarios
 
 
 # Cargar el modelo entrenado
@@ -21,6 +25,8 @@ else:
     print("Error: Modelo no encontrado. Asegúrate de que 'modelo_entrenado.pkl' exista.")
 
 user_states = {}
+MAX_INACTIVITY = 10 * 60  # 20 minutos en segundos
+
 
 
 respuestas = {
@@ -67,6 +73,13 @@ respuestas = {
     "Tiempo de respuesta renovaciones": "La respuesta a tu trámite será enviada a tu correo electrónico en un plazo máximo de 72 horas.\n\nTe pedimos, por favor, estar pendiente de tu bandeja de entrada y también revisar tu carpeta de spam o correos no deseados. ✉️\n\nSi después de este tiempo no has recibido respuesta, por favor responde *Pasaron más de 72 horas*, y con gusto revisaremos tu solicitud a detalle. 🕵",
     "Que duda": "Con gusto puedo ayudarte, aquí estamos para resolver tus dudas. 😊\n\nPara poder ayudarte mejor, ¿me puedes contar un poquito más? Por ejemplo: ¿es sobre pagos, renovaciones, documentos, o algo más? 🎓💰",
 }
+
+# Función para verificar si una sesión debe cerrarse por inactividad
+def sesion_expirada(from_number):
+    current_time = time.time()
+    last_active = user_states.get(from_number, {}).get('last_active', current_time)
+    return (current_time - last_active) > MAX_INACTIVITY
+
 # Función para validar el horario
 def esta_en_horario():
     tz = pytz.timezone("America/Mexico_City")  # Define la zona horaria
@@ -74,6 +87,21 @@ def esta_en_horario():
     start_time = datetime.strptime("08:00", "%H:%M").time()
     end_time = datetime.strptime("20:00", "%H:%M").time()
     return start_time <= current_time <= end_time
+
+# 🌟 Hilo en segundo plano para cerrar sesiones inactivas
+def revisar_sesiones():
+    while True:
+        current_time = time.time()
+        for from_number in list(user_states.keys()):
+            last_active = user_states.get(from_number, {}).get('last_active', current_time)
+            if (current_time - last_active) > MAX_INACTIVITY:
+                print(f"🛑 Sesión expirada para {from_number}. Eliminando sesión.")
+                del user_states[from_number]
+        time.sleep(60)  # Revisa cada 60 segundos
+
+# Iniciar el hilo en segundo plano
+hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
+hilo_revisor.start()
 
 
 # Función para procesar el mensaje con el modelo de IA
@@ -85,9 +113,22 @@ def procesar_mensaje(msg, from_number):
             "fin": False
         }
     try:
+        # Cerrar sesión si está inactiva
+        if sesion_expirada(from_number):
+            if from_number in user_states:
+                del user_states[from_number]
+            return {
+                "msg_response": "🕒 La sesión ha expirado por inactividad (10 minutos). Si necesitas más ayuda, envíanos un nuevo mensaje. 😊",
+                "asignar": False,
+                "fin": True
+            }
+        
+        # Actualizar tiempo de última actividad
+        user_states[from_number]['last_active'] = time.time()
+        
         # Clasificar el mensaje
         categoria = clf.predict([msg])[0]
-        print(f"Categoria: {categoria}")
+        print(f"🗂️ Categoria: {categoria}")
 
         # Crear la respuesta según la categoría
         if categoria == "Canalizar con asesor":
