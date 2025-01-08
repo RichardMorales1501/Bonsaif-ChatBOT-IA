@@ -27,6 +27,8 @@ else:
 
 user_states = {}
 MAX_INACTIVITY = 2 * 60  # 5 minutos en segundos
+segundoplano = False  # Variable para controlar el hilo en segundo plano
+
 
 
 
@@ -192,39 +194,37 @@ def home():
 # Endpoint para recibir datos de Bonsaif
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    try:
-        print(f"Encabezados de la solicitud: {dict(request.headers)}")
+    global segundoplano  # Asegúrate de acceder a la variable global correctamente
 
-        # Obtener los datos enviados por Bonsai
+    try:
+        # 🚨 Iniciar el hilo solo una vez
+        if not segundoplano:
+            hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
+            hilo_revisor.start()
+            segundoplano = True  # Cambiar la variable a True después de iniciar el hilo
+            print("✅ Hilo 'revisar_sesiones' activado desde /webhook.")
+
+        print(f"📥 Encabezados de la solicitud: {dict(request.headers)}")
         data = request.json
         if not data or "data" not in data:
             return jsonify({"error": "Datos inválidos"}), 400
 
-        print(f"Datos recibidos: {data}")
         msg = data.get('data', {}).get('msg', '')
         name = data.get('data', {}).get('name', '')
-        first_name = name.split()[0] if name else ''  # Toma el primer nombre
-
+        first_name = name.split()[0] if name else 'Usuario'
         from_number = data.get('data', {}).get('phone', '')
 
-        print(f"Mensaje recibido: {msg}")
-        print(f"Primer nombre recibido: {first_name}")
-        print(f"Telefono: {from_number}")
+        print(f"📲 Mensaje recibido: {msg}")
+        print(f"👤 Nombre: {first_name}")
+        print(f"📞 Teléfono: {from_number}")
 
-
-        # 🚨 Inicializar o actualizar tiempo de última actividad 🚨
         current_time = time.time()
         if from_number not in user_states:
-            user_states[from_number] = {
-                "step": 0,
-                "last_active": current_time
-            }
-            print(f"🆕 Nueva sesión iniciada para {from_number}.")
-            print(f"El tiempo de la ultima actividad es {current_time}")
+            user_states[from_number] = {"step": 0, "last_active": current_time}
+            print(f"🆕 Nueva sesión para {from_number}")
         else:
             user_states[from_number]['last_active'] = current_time
-            print(f"⏳ Tiempo de última actividad actualizado para {from_number}.")
-            print(f"El tiempo de la ultima actividad es {current_time}")
+            print(f"⏳ Última actividad actualizada para {from_number}")
 
         step = user_states[from_number]["step"]
 
@@ -318,10 +318,6 @@ def webhook():
         return jsonify({"error": "Error procesando la solicitud"}), 500
 
 if __name__ == '__main__':
-    print("🚀 Iniciando servidor Flask...")
-    hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
-    hilo_revisor.start()
-    print("✅ Hilo 'revisar_sesiones' ejecutándose correctamente.")
     # Configura el puerto en el que se ejecutará la aplicación
     # Obtener el puerto desde las variables de entorno
     app.run(host='0.0.0.0', port=port, debug=True)
