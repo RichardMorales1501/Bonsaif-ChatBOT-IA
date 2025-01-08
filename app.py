@@ -25,12 +25,12 @@ else:
     print("Error: Modelo no encontrado. Asegúrate de que 'modelo_entrenado.pkl' exista.")
 
 user_states = {}
-MAX_INACTIVITY = 10 * 60  # 20 minutos en segundos
+MAX_INACTIVITY = 5 * 60  # 5 minutos en segundos
 
 
 
 respuestas = {
-    "Adeudo con Laudex": "Lamentablemente, si tienes una mensualidad pendiente con nosotros, no podremos finalizar tu proceso de renovación. 😔\n\nEsto significa que no podrás inscribirte ni realizar el pago de tus colegiaturas hasta que te pongas al corriente con tus pagos.\n\n📞 _Para resolver esta situación, contácta a mis compañeras de atención a cliente, ellas están disponibles de lunes a viernes de 8 hrs a 20 hrs y sábados de 10 a 14 hrs_\n\n\n\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx\n\n.",
+    "Adeudo con Laudex": "Lamentablemente, si tienes una mensualidad pendiente con nosotros, no podremos finalizar tu proceso de renovación. 😔\n\nEsto significa que no podrás inscribirte ni realizar el pago de tus colegiaturas hasta que te pongas al corriente con tus pagos.\n\n📞 _Para resolver esta situación, contácta a mis compañeras de atención a cliente, ellas están disponibles de lunes a viernes de 8 hrs a 20 hrs y sábados de 10 a 14 hrs_\n\n\n\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Abono a capital" : "Puedes hacer abonos a capital y tienes dos opciones:\n1. Reducir el monto de tus pagos mensuales: Esto te permitirá tener cuotas más bajas cada mes 📉\n2. Reducir el plazo de tu crédito: De esta manera, terminarás de pagar tu crédito en menos tiempo ⏳\nPara hacer tu pago o conocer más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Adeudos con universidad": "Si tienes adeudos de algún periodo, no te preocupes.\n\nPuedes realizar una renovación y contemplar esa cantidad dentro del monto solicitado, siempre y cuando tu crédito tenga línea suficiente para cubrirlo 💵",
     "Atencion al cliente": "Por favor, para esta solicitud debes comunicarte con atención al cliente:\n\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx\n\n_Mis compañeras están disponibles de lunes a viernes de 8 hrs a 20 hrs y sábados de 10 a 14 hrs_\n\n_Por favor, contáctalas lo antes posible para que puedan ayudarte_.",
@@ -74,11 +74,7 @@ respuestas = {
     "Que duda": "Con gusto puedo ayudarte, aquí estamos para resolver tus dudas. 😊\n\nPara poder ayudarte mejor, ¿me puedes contar un poquito más? Por ejemplo: ¿es sobre pagos, renovaciones, documentos, o algo más? 🎓💰",
 }
 
-# Función para verificar si una sesión debe cerrarse por inactividad
-def sesion_expirada(from_number):
-    current_time = time.time()
-    last_active = user_states.get(from_number, {}).get('last_active', current_time)
-    return (current_time - last_active) > MAX_INACTIVITY
+
 
 # Función para validar el horario
 def esta_en_horario():
@@ -103,7 +99,6 @@ def revisar_sesiones():
 hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
 hilo_revisor.start()
 
-
 # Función para procesar el mensaje con el modelo de IA
 def procesar_mensaje(msg, from_number):
     if clf is None:
@@ -113,23 +108,16 @@ def procesar_mensaje(msg, from_number):
             "fin": False
         }
     try:
-        # Cerrar sesión si está inactiva
-        if sesion_expirada(from_number):
-            if from_number in user_states:
-                del user_states[from_number]
-            return {
-                "msg_response": "🕒 ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
-                "asignar": False,
-                "fin": True
-            }
-        
         # Actualizar tiempo de última actividad
-        user_states[from_number]['last_active'] = time.time()
+        if from_number not in user_states:
+            user_states[from_number] = {"last_active": time.time()}
+        else:
+            user_states[from_number]['last_active'] = time.time()
         
         # Clasificar el mensaje
         categoria = clf.predict([msg])[0]
         print(f"🗂️ Categoria: {categoria}")
-
+        
         # Crear la respuesta según la categoría
         if categoria == "Canalizar con asesor":
             if esta_en_horario():  # Verificar si estamos dentro del horario de atención
