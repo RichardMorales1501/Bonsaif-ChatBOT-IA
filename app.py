@@ -78,6 +78,25 @@ respuestas = {
 }
 
 
+def revisar_sesiones():
+    print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")
+    while True:
+        current_time = time.time()
+        print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")
+
+        for from_number, user_data in list(user_states.items()):
+            last_active = user_data.get('last_active', current_time)
+            tiempo_inactivo = current_time - last_active
+
+            print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
+
+            if tiempo_inactivo > MAX_INACTIVITY:
+                print(f"🛑 Sesión expirada para {from_number}. Marcando como pendiente de expiración.")
+                user_states[from_number]['step'] = 10
+                user_states[from_number]['expirado'] = True  # Marcar como expirado
+
+        print("💓 Hilo 'revisar_sesiones' sigue activo...")
+        time.sleep(60)  # Revisar cada 60 segundos
 
 # Función para validar el horario
 def esta_en_horario():
@@ -86,20 +105,6 @@ def esta_en_horario():
     start_time = datetime.strptime("08:00", "%H:%M").time()
     end_time = datetime.strptime("20:00", "%H:%M").time()
     return start_time <= current_time <= end_time
-
-def revisar_sesiones():
-    print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")
-    while True:
-        current_time = time.time()
-        print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")
-        for from_number, user_data in list(user_states.items()):
-            last_active = user_data.get('last_active', current_time)
-            tiempo_inactivo = current_time - last_active
-            print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
-            if tiempo_inactivo > MAX_INACTIVITY:
-                print(f"🛑 Sesión expirada para {from_number}. Moviendo al step 10.")
-                user_states[from_number]['step'] = 10  # Asignar step 10
-        time.sleep(60)  # Revisar cada 60 segundos
 
 # Función para procesar el mensaje con el modelo de IA
 def procesar_mensaje(msg, from_number):
@@ -306,11 +311,14 @@ def webhook():
             return jsonify(response), 200
         
         elif step == 10:
-            return jsonify({
-                "msg_response": f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
-                "asignar": False,
-                "fin": True
-            }), 200
+            if user_states[from_number].get('expirado', False):
+                print(f"📤 Mensaje automático de expiración para {from_number}")
+                del user_states[from_number]  # Eliminar la sesión expirada
+                return jsonify({
+                    "msg_response": f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
+                    "asignar": False,
+                    "fin": True
+                }), 200
         
 
     except Exception as e:
