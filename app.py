@@ -5,6 +5,7 @@ from datetime import datetime
 import pytz
 import time
 import threading
+import requests  # Para enviar solicitudes HTTP dentro del hilo
 
 
 
@@ -84,18 +85,21 @@ def esta_en_horario():
     end_time = datetime.strptime("20:00", "%H:%M").time()
     return start_time <= current_time <= end_time
 
-# 🌟 Hilo en segundo plano para marcar sesiones inactivas como expiradas
 def revisar_sesiones():
+    print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")  # Mensaje al iniciar el hilo
     while True:
         current_time = time.time()
+        print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")  # Mensaje cada minuto
         for from_number in list(user_states.keys()):
             last_active = user_states.get(from_number, {}).get('last_active', current_time)
-            if (current_time - last_active) > MAX_INACTIVITY:
-                print(f"🛑 Sesión expirada para {from_number}. Marcando para despedida.")
-                user_states[from_number]['expired'] = True  # Marcar sesión como expirada
-        time.sleep(60)  # Revisa cada 60 segundos
+            tiempo_inactivo = current_time - last_active
+            print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
+            if tiempo_inactivo > MAX_INACTIVITY:
+                print(f"🛑 Sesión expirada para {from_number}. Moviendo al step 10.")
+                user_states[from_number]['step'] = 10  # Asignar step 10 en lugar de 'expired'
+        time.sleep(60)  # Espera 60 segundos antes de la siguiente revisión
 
-# Iniciar el hilo en segundo plano
+# Iniciar hilo en segundo plano
 hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
 hilo_revisor.start()
 
@@ -108,21 +112,12 @@ def procesar_mensaje(msg, from_number):
             "fin": False
         }
     try:
-        # Verificar si la sesión ha expirado
-        if user_states.get(from_number, {}).get('expired', False):
-            print(f"👋 Sesión expirada para {from_number}. Enviando mensaje de despedida.")
-            del user_states[from_number]  # Limpiar sesión
-            return {
-                "msg_response": "🕒 ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
-                "asignar": False,
-                "fin": True
-            }
-
         # Actualizar tiempo de última actividad
-        if from_number not in user_states:
-            user_states[from_number] = {"last_active": time.time()}
-        else:
-            user_states[from_number]['last_active'] = time.time()
+        user_states[from_number]['last_active'] = time.time()
+
+        # Clasificar el mensaje
+        categoria = clf.predict([msg])[0]
+        print(f"Categoria: {categoria}")
         
         # Clasificar el mensaje (simulación de IA)
         categoria = clf.predict([msg])[0]
@@ -220,9 +215,20 @@ def webhook():
         print(f"Primer nombre recibido: {first_name}")
         print(f"Telefono: {from_number}")
 
-        # Inicializar el estado del usuario si es necesario
+
+        # 🚨 Inicializar o actualizar tiempo de última actividad 🚨
+        current_time = time.time()
         if from_number not in user_states:
-            user_states[from_number] = {"step": 0}
+            user_states[from_number] = {
+                "step": 0,
+                "last_active": current_time
+            }
+            print(f"🆕 Nueva sesión iniciada para {from_number}.")
+            print(f"El tiempo de la ultima actividad es {current_time}")
+        else:
+            user_states[from_number]['last_active'] = current_time
+            print(f"⏳ Tiempo de última actividad actualizado para {from_number}.")
+            print(f"El tiempo de la ultima actividad es {current_time}")
 
         step = user_states[from_number]["step"]
 
@@ -303,10 +309,18 @@ def webhook():
             response = procesar_mensaje(msg, from_number)
             return jsonify(response), 200
         
+        elif step == 10:
+            return jsonify({
+                "msg_response": f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
+                "asignar": False,
+                "fin": True
+            }), 200
+        
 
     except Exception as e:
         print(f"Error procesando la solicitud: {e}")
         return jsonify({"error": "Error procesando la solicitud"}), 500
+
 
 
 if __name__ == '__main__':
