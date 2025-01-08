@@ -206,8 +206,6 @@ def home():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     try:
-        print("🕵🏻‍♂️ Inciando la revisión de sesiones 🕵🏻‍♂️")
-        revisar_sesiones()
         print(f"Encabezados de la solicitud: {dict(request.headers)}")
 
         # Obtener los datos enviados por Bonsai
@@ -226,6 +224,8 @@ def webhook():
         print(f"Primer nombre recibido: {first_name}")
         print(f"Telefono: {from_number}")
 
+        # 🚨 Revisar sesiones con cada interacción
+        revisar_sesiones()
 
         # 🚨 Inicializar o actualizar tiempo de última actividad 🚨
         current_time = time.time()
@@ -318,6 +318,7 @@ def webhook():
         
         elif step == 9:
             response = procesar_mensaje(msg, from_number)
+            revisar_sesiones()
             return jsonify(response), 200
         
         elif step == 10:
