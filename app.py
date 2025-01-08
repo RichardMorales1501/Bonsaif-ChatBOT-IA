@@ -26,7 +26,7 @@ else:
     print("Error: Modelo no encontrado. Asegúrate de que 'modelo_entrenado.pkl' exista.")
 
 user_states = {}
-MAX_INACTIVITY = 5 * 60  # 5 minutos en segundos
+MAX_INACTIVITY = 6 * 60  # 5 minutos en segundos
 
 
 
@@ -97,11 +97,8 @@ def revisar_sesiones():
             if tiempo_inactivo > MAX_INACTIVITY:
                 print(f"🛑 Sesión expirada para {from_number}. Moviendo al step 10.")
                 user_states[from_number]['step'] = 10  # Asignar step 10 en lugar de 'expired'
-        time.sleep(60)  # Espera 60 segundos antes de la siguiente revisión
+        time.sleep(120)  # Espera 60 segundos antes de la siguiente revisión
 
-# Iniciar hilo en segundo plano
-hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
-hilo_revisor.start()
 
 # Función para procesar el mensaje con el modelo de IA
 def procesar_mensaje(msg, from_number):
@@ -321,9 +318,10 @@ def webhook():
         print(f"Error procesando la solicitud: {e}")
         return jsonify({"error": "Error procesando la solicitud"}), 500
 
-
-
 if __name__ == '__main__':
+
+    hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
+    hilo_revisor.start()
     # Configura el puerto en el que se ejecutará la aplicación
     # Obtener el puerto desde las variables de entorno
     app.run(host='0.0.0.0', port=port, debug=True)
