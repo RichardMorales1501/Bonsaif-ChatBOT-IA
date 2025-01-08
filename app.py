@@ -77,12 +77,11 @@ respuestas = {
 
 
 def send_inactivity_message(from_number):
-    first_name = user_states.get(from_number, {}).get('first_name', 'Usuario')
     print(f"📤 Enviando mensaje de sesión expirada al usuario {from_number}.")
     
     # Aquí se retorna el mensaje que será consumido por el sistema
     return jsonify({
-        "msg_response": f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
+        "msg_response": "🕒 ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
         "asignar": False,
         "fin": True
     }), 200
@@ -107,6 +106,7 @@ def revisar_sesiones():
             print(f"🛑 Sesión expirada para {from_number}. Moviendo al step 10.")
             user_states[from_number]['step'] = 10  # Asignar step 10 en lugar de 'expired'
             # Enviar mensaje automáticamente
+            print(f"Preparando función para envio de mensaje de cierre para {from_number}")
             send_inactivity_message(from_number)  
             # Eliminar al usuario después de enviar el mensaje
             del user_states[from_number]
