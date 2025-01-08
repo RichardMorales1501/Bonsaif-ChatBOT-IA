@@ -80,11 +80,11 @@ def send_inactivity_message(from_number):
     print(f"📤 Enviando mensaje de sesión expirada al usuario {from_number}.")
     
     # Aquí se retorna el mensaje que será consumido por el sistema
-    return jsonify({
+    return {
         "msg_response": "🕒 ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
         "asignar": False,
         "fin": True
-    }), 200
+    }
 
 # Función para validar el horario
 def esta_en_horario():
