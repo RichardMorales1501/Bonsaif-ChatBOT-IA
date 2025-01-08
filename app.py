@@ -77,26 +77,33 @@ respuestas = {
     "Que duda": "Con gusto puedo ayudarte, aquí estamos para resolver tus dudas. 😊\n\nPara poder ayudarte mejor, ¿me puedes contar un poquito más? Por ejemplo: ¿es sobre pagos, renovaciones, documentos, o algo más? 🎓💰",
 }
 
+# Iniciar el hilo de revisión de sesiones
+def iniciar_hilo_revisor():
+    global segundoplano
+    if not segundoplano:
+        hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
+        hilo_revisor.start()
+        segundoplano = True
+        print("✅ Hilo 'revisar_sesiones' activado correctamente al iniciar el servidor.")
 
 def revisar_sesiones():
     print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")
-    while True:
-        current_time = time.time()
-        print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")
+    current_time = time.time()
+    print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")
 
-        for from_number, user_data in list(user_states.items()):
-            last_active = user_data.get('last_active', current_time)
-            tiempo_inactivo = current_time - last_active
+    for from_number, user_data in list(user_states.items()):
+        last_active = user_data.get('last_active', current_time)
+        tiempo_inactivo = current_time - last_active
 
-            print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
+        print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
 
-            if tiempo_inactivo > MAX_INACTIVITY:
-                print(f"🛑 Sesión expirada para {from_number}. Marcando como pendiente de expiración.")
-                user_states[from_number]['step'] = 10
-                user_states[from_number]['expirado'] = True  # Marcar como expirado
+        if tiempo_inactivo > MAX_INACTIVITY:
+            print(f"🛑 Sesión expirada para {from_number}. Marcando como pendiente de expiración.")
+            user_states[from_number]['step'] = 10
+            user_states[from_number]['expirado'] = True  # Marcar como expirado
 
-        print("💓 Hilo 'revisar_sesiones' sigue activo...")
-        time.sleep(60)  # Revisar cada 60 segundos
+    print("💓 Hilo 'revisar_sesiones' sigue activo...")
+    time.sleep(60)
 
 # Función para validar el horario
 def esta_en_horario():
@@ -200,15 +207,8 @@ def home():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     global segundoplano  # Asegúrate de acceder a la variable global correctamente
-
+    
     try:
-        # 🚨 Iniciar el hilo solo una vez
-        if not segundoplano:
-            hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
-            hilo_revisor.start()
-            segundoplano = True  # Cambiar la variable a True después de iniciar el hilo
-            print("✅ Hilo 'revisar_sesiones' activado desde /webhook.")
-
         print(f"📥 Encabezados de la solicitud: {dict(request.headers)}")
         data = request.json
         if not data or "data" not in data:
@@ -224,6 +224,7 @@ def webhook():
         print(f"📞 Teléfono: {from_number}")
 
         current_time = time.time()
+
         if from_number not in user_states:
             user_states[from_number] = {"step": 0, "last_active": current_time}
             print(f"🆕 Nueva sesión para {from_number}")
@@ -326,6 +327,7 @@ def webhook():
         return jsonify({"error": "Error procesando la solicitud"}), 500
 
 if __name__ == '__main__':
+    iniciar_hilo_revisor()
     # Configura el puerto en el que se ejecutará la aplicación
     # Obtener el puerto desde las variables de entorno
     app.run(host='0.0.0.0', port=port, debug=True)
