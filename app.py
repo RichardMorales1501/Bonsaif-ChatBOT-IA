@@ -118,7 +118,7 @@ def procesar_mensaje(msg, from_number):
             if from_number in user_states:
                 del user_states[from_number]
             return {
-                "msg_response": "🕒 La sesión ha expirado por inactividad (10 minutos). Si necesitas más ayuda, envíanos un nuevo mensaje. 😊",
+                "msg_response": "🕒 ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
                 "asignar": False,
                 "fin": True
             }
