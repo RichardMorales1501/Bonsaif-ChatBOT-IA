@@ -84,15 +84,15 @@ def esta_en_horario():
     end_time = datetime.strptime("20:00", "%H:%M").time()
     return start_time <= current_time <= end_time
 
-# 🌟 Hilo en segundo plano para cerrar sesiones inactivas
+# 🌟 Hilo en segundo plano para marcar sesiones inactivas como expiradas
 def revisar_sesiones():
     while True:
         current_time = time.time()
         for from_number in list(user_states.keys()):
             last_active = user_states.get(from_number, {}).get('last_active', current_time)
             if (current_time - last_active) > MAX_INACTIVITY:
-                print(f"🛑 Sesión expirada para {from_number}. Eliminando sesión.")
-                del user_states[from_number]
+                print(f"🛑 Sesión expirada para {from_number}. Marcando para despedida.")
+                user_states[from_number]['expired'] = True  # Marcar sesión como expirada
         time.sleep(60)  # Revisa cada 60 segundos
 
 # Iniciar el hilo en segundo plano
@@ -108,13 +108,23 @@ def procesar_mensaje(msg, from_number):
             "fin": False
         }
     try:
+        # Verificar si la sesión ha expirado
+        if user_states.get(from_number, {}).get('expired', False):
+            print(f"👋 Sesión expirada para {from_number}. Enviando mensaje de despedida.")
+            del user_states[from_number]  # Limpiar sesión
+            return {
+                "msg_response": "🕒 ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
+                "asignar": False,
+                "fin": True
+            }
+
         # Actualizar tiempo de última actividad
         if from_number not in user_states:
             user_states[from_number] = {"last_active": time.time()}
         else:
             user_states[from_number]['last_active'] = time.time()
         
-        # Clasificar el mensaje
+        # Clasificar el mensaje (simulación de IA)
         categoria = clf.predict([msg])[0]
         print(f"🗂️ Categoria: {categoria}")
         
