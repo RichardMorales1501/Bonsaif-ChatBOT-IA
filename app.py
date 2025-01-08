@@ -80,17 +80,12 @@ def send_inactivity_message(from_number):
     first_name = user_states.get(from_number, {}).get('first_name', 'Usuario')
     print(f"📤 Enviando mensaje de sesión expirada al usuario {from_number}.")
     
-    # Aquí deberías llamar a la función que realmente envía el mensaje al usuario.
-    # Simularemos el envío con un print.
-    mensaje = f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬"
-    print(f"➡️ Mensaje enviado a {from_number}: {mensaje}")
-    
-    # Opcionalmente, si tu sistema utiliza algún mecanismo de respuesta JSON:
-    return {
-        "msg_response": mensaje,
+    # Aquí se retorna el mensaje que será consumido por el sistema
+    return jsonify({
+        "msg_response": f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
         "asignar": False,
         "fin": True
-    }
+    }), 200
 
 # Función para validar el horario
 def esta_en_horario():
