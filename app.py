@@ -5,65 +5,28 @@ from datetime import datetime
 import pytz
 import time
 import threading
+import requests  # Para enviar solicitudes HTTP dentro del hilo
 
-segundoplano = False  # Variable para controlar el hilo en segundo plano
+
+
 
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 2000))  # Usa 2000 si la variable PORT no está definida
 # Estado inicial de los usuarios
 
-user_states = {}
-MAX_INACTIVITY = 2 * 60  # 5 minutos en segundos
-
-def revisar_sesiones():
-    print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")
-
-    while True:
-        current_time = time.time()
-        print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")
-
-        for from_number, user_data in list(user_states.items()):
-            last_active = user_data.get('last_active', current_time)
-            tiempo_inactivo = current_time - last_active
-
-            print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
-
-            if tiempo_inactivo > MAX_INACTIVITY:
-                print(f"🛑 Sesión expirada para {from_number}. Enviando mensaje de expiración...")
-                user_states[from_number]['step'] = 10
-                user_states[from_number]['expirado'] = True  # Marcar como expirado
-
-                # Simula el envío del mensaje a través del webhook
-                enviar_mensaje_expiracion(from_number)
-
-                # Eliminar usuario después de expirar
-                del user_states[from_number]
-
-        print("💓 Hilo 'revisar_sesiones' sigue activo...")
-        time.sleep(60)  # Espera 60 segundos antes de la siguiente revisión
-
-
-# ✅ Función para iniciar el hilo
-def iniciar_hilo_revisor():
-    global segundoplano
-    if not segundoplano:
-        hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
-        hilo_revisor.start()
-        segundoplano = True
-        print("✅ Hilo 'revisar_sesiones' activado correctamente al iniciar el servidor.")
-
 
 # Cargar el modelo entrenado
 MODEL_PATH = "modelo_entrenado.pkl"
 if os.path.exists(MODEL_PATH):
     clf = joblib.load(MODEL_PATH)
-    iniciar_hilo_revisor()
-    print("Inicia Hilo de Revisión")
     print("Modelo cargado exitosamente.")
 else:
     clf = None
     print("Error: Modelo no encontrado. Asegúrate de que 'modelo_entrenado.pkl' exista.")
+
+user_states = {}
+MAX_INACTIVITY = 30 * 60  # 5 minutos en segundos
 
 
 
@@ -112,24 +75,7 @@ respuestas = {
     "Que duda": "Con gusto puedo ayudarte, aquí estamos para resolver tus dudas. 😊\n\nPara poder ayudarte mejor, ¿me puedes contar un poquito más? Por ejemplo: ¿es sobre pagos, renovaciones, documentos, o algo más? 🎓💰",
 }
 
-def enviar_mensaje_expiracion(from_number):
-    print(f"📤 Enviando mensaje de expiración a {from_number}...")
 
-    # Simula los datos que BonsaiF enviaría al webhook
-    fake_data = {
-        "data": {
-            "phone": from_number,
-            "msg": "🕒 ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨"
-        }
-    }
-
-    try:
-        # Simula una llamada local al webhook
-        with app.test_request_context('/webhook', method='POST', json=fake_data):
-            response = webhook()
-            print(f"✅ Respuesta simulada del webhook: {response.get_json()}")
-    except Exception as e:
-        print(f"❌ Error al enviar mensaje de expiración: {e}")
 
 # Función para validar el horario
 def esta_en_horario():
@@ -138,6 +84,21 @@ def esta_en_horario():
     start_time = datetime.strptime("08:00", "%H:%M").time()
     end_time = datetime.strptime("20:00", "%H:%M").time()
     return start_time <= current_time <= end_time
+
+def revisar_sesiones():
+    print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")  # Mensaje al iniciar el hilo
+    while True:
+        current_time = time.time()
+        print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")  # Mensaje cada minuto
+        for from_number in list(user_states.keys()):
+            last_active = user_states.get(from_number, {}).get('last_active', current_time)
+            tiempo_inactivo = current_time - last_active
+            print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
+            if tiempo_inactivo > MAX_INACTIVITY:
+                print(f"🛑 Sesión expirada para {from_number}. Moviendo al step 10.")
+                user_states[from_number]['step'] = 10  # Asignar step 10 en lugar de 'expired'
+        time.sleep(1800)  # Espera 60 segundos antes de la siguiente revisión
+
 
 # Función para procesar el mensaje con el modelo de IA
 def procesar_mensaje(msg, from_number):
@@ -232,31 +193,39 @@ def home():
 # Endpoint para recibir datos de Bonsaif
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    global segundoplano  # Asegúrate de acceder a la variable global correctamente
-
     try:
-        print(f"📥 Encabezados de la solicitud: {dict(request.headers)}")
+        print(f"Encabezados de la solicitud: {dict(request.headers)}")
+
+        # Obtener los datos enviados por Bonsai
         data = request.json
         if not data or "data" not in data:
             return jsonify({"error": "Datos inválidos"}), 400
 
+        print(f"Datos recibidos: {data}")
         msg = data.get('data', {}).get('msg', '')
         name = data.get('data', {}).get('name', '')
-        first_name = name.split()[0] if name else 'Usuario'
+        first_name = name.split()[0] if name else ''  # Toma el primer nombre
+
         from_number = data.get('data', {}).get('phone', '')
 
-        print(f"📲 Mensaje recibido: {msg}")
-        print(f"👤 Nombre: {first_name}")
-        print(f"📞 Teléfono: {from_number}")
+        print(f"Mensaje recibido: {msg}")
+        print(f"Primer nombre recibido: {first_name}")
+        print(f"Telefono: {from_number}")
 
+
+        # 🚨 Inicializar o actualizar tiempo de última actividad 🚨
         current_time = time.time()
-
         if from_number not in user_states:
-            user_states[from_number] = {"step": 0, "last_active": current_time}
-            print(f"🆕 Nueva sesión para {from_number}")
+            user_states[from_number] = {
+                "step": 0,
+                "last_active": current_time
+            }
+            print(f"🆕 Nueva sesión iniciada para {from_number}.")
+            print(f"El tiempo de la ultima actividad es {current_time}")
         else:
             user_states[from_number]['last_active'] = current_time
-            print(f"⏳ Última actividad actualizada para {from_number}")
+            print(f"⏳ Tiempo de última actividad actualizado para {from_number}.")
+            print(f"El tiempo de la ultima actividad es {current_time}")
 
         step = user_states[from_number]["step"]
 
@@ -338,14 +307,13 @@ def webhook():
             return jsonify(response), 200
         
         elif step == 10:
-            if user_states[from_number].get('expirado', False):
-                print(f"📤 Mensaje automático de expiración para {from_number}")
-                del user_states[from_number]  # Eliminar la sesión expirada
-                return jsonify({
-                    "msg_response": f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
-                    "asignar": False,
-                    "fin": True
-                }), 200
+            if from_number in user_states:
+                del user_states[from_number]  # Eliminar al usuario de la lista de estados
+            return jsonify({
+                "msg_response": f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
+                "asignar": False,
+                "fin": True
+            }), 200
         
 
     except Exception as e:
@@ -353,7 +321,9 @@ def webhook():
         return jsonify({"error": "Error procesando la solicitud"}), 500
 
 if __name__ == '__main__':
-    print("Prueba __main__")
+
+    hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
+    hilo_revisor.start()
     # Configura el puerto en el que se ejecutará la aplicación
     # Obtener el puerto desde las variables de entorno
     app.run(host='0.0.0.0', port=port, debug=True)
