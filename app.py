@@ -87,17 +87,15 @@ def esta_en_horario():
 
 def revisar_sesiones():
     print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")  # Mensaje al iniciar el hilo
-    while True:
-        current_time = time.time()
-        print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")  # Mensaje cada minuto
-        for from_number in list(user_states.keys()):
-            last_active = user_states.get(from_number, {}).get('last_active', current_time)
-            tiempo_inactivo = current_time - last_active
-            print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
-            if tiempo_inactivo > MAX_INACTIVITY:
-                print(f"🛑 Sesión expirada para {from_number}. Moviendo al step 10.")
-                user_states[from_number]['step'] = 10  # Asignar step 10 en lugar de 'expired'
-        time.sleep(1800)  # Espera 60 segundos antes de la siguiente revisión
+    current_time = time.time()
+    print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")  # Mensaje cada minuto
+    for from_number in list(user_states.keys()):
+        last_active = user_states.get(from_number, {}).get('last_active', current_time)
+        tiempo_inactivo = current_time - last_active
+        print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
+        if tiempo_inactivo > MAX_INACTIVITY:
+            print(f"🛑 Sesión expirada para {from_number}. Moviendo al step 10.")
+            user_states[from_number]['step'] = 10  # Asignar step 10 en lugar de 'expired'
 
 
 # Función para procesar el mensaje con el modelo de IA
@@ -212,6 +210,9 @@ def webhook():
         print(f"Primer nombre recibido: {first_name}")
         print(f"Telefono: {from_number}")
 
+        hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
+        hilo_revisor.start()
+
 
         # 🚨 Inicializar o actualizar tiempo de última actividad 🚨
         current_time = time.time()
@@ -322,8 +323,7 @@ def webhook():
 
 if __name__ == '__main__':
 
-    hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
-    hilo_revisor.start()
+
     # Configura el puerto en el que se ejecutará la aplicación
     # Obtener el puerto desde las variables de entorno
     app.run(host='0.0.0.0', port=port, debug=True)
