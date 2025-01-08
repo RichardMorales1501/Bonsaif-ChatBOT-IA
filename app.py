@@ -26,7 +26,7 @@ else:
     print("Error: Modelo no encontrado. Asegúrate de que 'modelo_entrenado.pkl' exista.")
 
 user_states = {}
-MAX_INACTIVITY = 30 * 60  # 5 minutos en segundos
+MAX_INACTIVITY = 10 * 60  # 5 minutos en segundos
 
 
 
