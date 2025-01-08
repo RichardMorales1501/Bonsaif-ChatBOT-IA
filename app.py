@@ -114,6 +114,8 @@ def revisar_sesiones():
 
 # Función para procesar el mensaje con el modelo de IA
 def procesar_mensaje(msg, from_number):
+    print("🕵🏻‍♂️ Iniciando revisión de sesiones 🕵🏻‍♂️")
+    revisar_sesiones()
     if clf is None:
         return {
             "msg_response": respuestas["Desconocido"],
@@ -318,7 +320,6 @@ def webhook():
         
         elif step == 9:
             response = procesar_mensaje(msg, from_number)
-            revisar_sesiones()
             return jsonify(response), 200
         
         elif step == 10:
