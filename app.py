@@ -211,8 +211,8 @@ def home():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     try:
-        hilo_revisor = threading.Thread(target=revisar_sesiones, daemon=True)
-        hilo_revisor.start()
+        print("🕵🏻‍♂️ Inciando la revisión de sesiones 🕵🏻‍♂️")
+        revisar_sesiones()
         print(f"Encabezados de la solicitud: {dict(request.headers)}")
 
         # Obtener los datos enviados por Bonsai
