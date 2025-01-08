@@ -144,10 +144,6 @@ def procesar_mensaje(msg, from_number):
         categoria = clf.predict([msg])[0]
         print(f"Categoria: {categoria}")
         
-        # Clasificar el mensaje (simulación de IA)
-        categoria = clf.predict([msg])[0]
-        print(f"🗂️ Categoria: {categoria}")
-        
         # Crear la respuesta según la categoría
         if categoria == "Canalizar con asesor":
             if esta_en_horario():  # Verificar si estamos dentro del horario de atención
