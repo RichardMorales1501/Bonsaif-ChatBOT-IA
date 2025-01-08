@@ -95,27 +95,38 @@ def esta_en_horario():
     return start_time <= current_time <= end_time
 
 def revisar_sesiones():
-    print("✅ Hilo 'revisar_sesiones' iniciado. Comenzando monitoreo de sesiones...")  # Mensaje al iniciar el hilo
+    """
+    Revisa las sesiones activas y devuelve una lista de usuarios cuyas sesiones han expirado.
+    """
+    print("✅ Iniciando revisión de sesiones...")
     current_time = time.time()
-    print(f"🔄 [{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Revisando sesiones activas...")  # Mensaje cada minuto
+    usuarios_expirados = []  # Almacenará los usuarios cuyas sesiones han expirado
+    
     for from_number in list(user_states.keys()):
         last_active = user_states.get(from_number, {}).get('last_active', current_time)
         tiempo_inactivo = current_time - last_active
+        
         print(f"⏳ Usuario {from_number}: Inactivo por {int(tiempo_inactivo)} segundos.")
         if tiempo_inactivo > MAX_INACTIVITY:
             print(f"🛑 Sesión expirada para {from_number}. Moviendo al step 10.")
-            user_states[from_number]['step'] = 10  # Asignar step 10 en lugar de 'expired'
-            # Enviar mensaje automáticamente
-            print(f"Preparando función para envio de mensaje de cierre para {from_number}")
-            send_inactivity_message(from_number)  
-            # Eliminar al usuario después de enviar el mensaje
-            del user_states[from_number]
+            user_states[from_number]['step'] = 10  # Marcamos el paso como expirado.
+            usuarios_expirados.append(from_number)  # Agregamos el usuario a la lista de expirados
+    
+    return usuarios_expirados
 
 
 # Función para procesar el mensaje con el modelo de IA
 def procesar_mensaje(msg, from_number):
-    print("🕵🏻‍♂️ Iniciando revisión de sesiones 🕵🏻‍♂️")
-    revisar_sesiones()
+        # 🚨 Revisar sesiones con cada interacción
+    usuarios_expirados = revisar_sesiones()
+
+    # 🕒 Manejar usuarios con sesión expirada
+    for usuario_expirado in usuarios_expirados:
+        response = send_inactivity_message(usuario_expirado)
+        print(f"📤 Mensaje de inactividad enviado al usuario {usuario_expirado}: {response['msg_response']}")
+        del user_states[usuario_expirado]  # Eliminar al usuario después de enviar el mensaje
+        # 🚨 Actualizar tiempo de última actividad para el usuario actual
+
     if clf is None:
         return {
             "msg_response": respuestas["Desconocido"],
@@ -183,6 +194,7 @@ def procesar_mensaje(msg, from_number):
                 "asignar": True,
                 "fin": False
             }
+            
         else:
             # Respuesta para categorías desconocidas
             return {
@@ -208,26 +220,30 @@ def home():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     try:
-        print(f"Encabezados de la solicitud: {dict(request.headers)}")
-
+        print(f"🛎️ Encabezados de la solicitud: {dict(request.headers)}")
+        
         # Obtener los datos enviados por Bonsai
         data = request.json
         if not data or "data" not in data:
             return jsonify({"error": "Datos inválidos"}), 400
 
-        print(f"Datos recibidos: {data}")
         msg = data.get('data', {}).get('msg', '')
         name = data.get('data', {}).get('name', '')
-        first_name = name.split()[0] if name else ''  # Toma el primer nombre
-
+        first_name = name.split()[0] if name else ''
         from_number = data.get('data', {}).get('phone', '')
 
-        print(f"Mensaje recibido: {msg}")
-        print(f"Primer nombre recibido: {first_name}")
-        print(f"Telefono: {from_number}")
+        print(f"💬 Mensaje recibido: {msg}")
+        print(f"🧑 Primer nombre recibido: {first_name}")
+        print(f"📱 Teléfono: {from_number}")
 
         # 🚨 Revisar sesiones con cada interacción
-        revisar_sesiones()
+        usuarios_expirados = revisar_sesiones()
+
+        # 🕒 Manejar usuarios con sesión expirada
+        for usuario_expirado in usuarios_expirados:
+            response = send_inactivity_message(usuario_expirado)
+            print(f"📤 Mensaje de inactividad enviado al usuario {usuario_expirado}: {response['msg_response']}")
+            del user_states[usuario_expirado]  # Eliminar al usuario después de enviar el mensaje
 
         # 🚨 Inicializar o actualizar tiempo de última actividad 🚨
         current_time = time.time()
@@ -237,11 +253,9 @@ def webhook():
                 "last_active": current_time
             }
             print(f"🆕 Nueva sesión iniciada para {from_number}.")
-            print(f"El tiempo de la ultima actividad es {current_time}")
         else:
             user_states[from_number]['last_active'] = current_time
             print(f"⏳ Tiempo de última actividad actualizado para {from_number}.")
-            print(f"El tiempo de la ultima actividad es {current_time}")
 
         step = user_states[from_number]["step"]
 
