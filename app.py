@@ -9,8 +9,6 @@ import requests  # Para enviar solicitudes HTTP dentro del hilo
 
 
 
-
-
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 2000))  # Usa 2000 si la variable PORT no está definida
 # Estado inicial de los usuarios
@@ -26,9 +24,8 @@ else:
     print("Error: Modelo no encontrado. Asegúrate de que 'modelo_entrenado.pkl' exista.")
 
 user_states = {}
-MAX_INACTIVITY = 2 * 60  # 5 minutos en segundos
+MAX_INACTIVITY = 1 * 60  # 5 minutos en segundos
 segundoplano = False  # Variable para controlar el hilo en segundo plano
-
 
 
 
@@ -306,6 +303,7 @@ def webhook():
             return jsonify(response), 200
         
         elif step == 10:
+            del user_states[from_number]  # Eliminar al usuario de la lista de estados
             return jsonify({
                 "msg_response": f"🕒 *{first_name}* ¡Ups! La sesión ha expirado por inactividad. Pero no te preocupes, ¡puedes retomarla cuando quieras! 😊✨ Envíanos un nuevo mensaje y estaremos aquí para ayudarte. 🚀💬",
                 "asignar": False,
