@@ -262,7 +262,7 @@ def webhook():
         if step == 0:
             user_states[from_number]["step"] = 1
             return jsonify({
-                "msg_response": f"Hola *{first_name}*\n\nBienvenido a Renovaciones Laudex 💚\n\n*¿En qué podemos ayudarte?*\n\n1. Iniciar renovación\n2. Seguimiento a solicitud\n3. Dudas sobre pagos\n4. Otra consulta",
+                "msg_response": f"Hola *{first_name}*\n\nBienvenido a Renovaciones Laudex 💰📚\n\n*¿En qué podemos ayudarte?*\n\n1. Iniciar renovación\n2. Seguimiento a solicitud\n3. Dudas sobre pagos\n4. Otra consulta",
                 "asignar": False,
                 "fin": False
             }), 200
