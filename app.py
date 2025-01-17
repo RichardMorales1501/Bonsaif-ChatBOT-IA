@@ -31,7 +31,7 @@ MAX_INACTIVITY = 10 * 60  # 5 minutos en segundos
 
 
 respuestas = {
-    "Adeudo con Laudex": "Lamentablemente, si tienes una mensualidad pendiente con nosotros, no podremos finalizar tu proceso de renovación. 😔\n\nEsto significa que no podrás inscribirte ni realizar el pago de tus colegiaturas hasta que te pongas al corriente con tus pagos.\n\n📞 _Para resolver esta situación, contácta a mis compañeras de atención a cliente, ellas están disponibles de lunes a viernes de 8 hrs a 20 hrs y sábados de 10 a 14 hrs_\n\n\n\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
+    "Adeudo con Laudex": "Lamentablemente, si tienes una mensualidad pendiente con nosotros, no podremos finalizar tu proceso de renovación. 😔\n\nEsto significa que no podrás inscribirte ni realizar el pago de tus colegiaturas hasta que te pongas al corriente con tus pagos.\n\n📞 _Para resolver esta situación, contácta a mis compañeras de atención a cliente, ellas están disponibles de lunes a viernes de 8 hrs a 20 hrs y sábados de 10 a 14 hrs_\n\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Abono a capital" : "Puedes hacer abonos a capital y tienes dos opciones:\n1. Reducir el monto de tus pagos mensuales: Esto te permitirá tener cuotas más bajas cada mes 📉\n2. Reducir el plazo de tu crédito: De esta manera, terminarás de pagar tu crédito en menos tiempo ⏳\nPara hacer tu pago o conocer más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Adeudos con universidad": "Si tienes adeudos de algún periodo, no te preocupes.\n\nPuedes realizar una renovación y contemplar esa cantidad dentro del monto solicitado, siempre y cuando tu crédito tenga línea suficiente para cubrirlo 💵",
     "Atencion al cliente": "Por favor, para esta solicitud debes comunicarte con atención al cliente:\n\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx\n\n_Mis compañeras están disponibles de lunes a viernes de 8 hrs a 20 hrs y sábados de 10 a 14 hrs_\n\n_Por favor, contáctalas lo antes posible para que puedan ayudarte_.",
@@ -54,9 +54,9 @@ respuestas = {
     "Informacion comercial" : "",
     "Informacion del pago" : "El monto que debes pagar se encuentra en el pagaré que se te envía a ti y a tu obligado solidario por correo electrónico💶\nEl monto del pago mensual está resaltado en amarillo, y también encontrarás el mes específico en el que debes realizar el pago.\nPara hacer tu pago o conocer más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Informacion financiera": "Puedes consultar tus montos, saldos y movimientos en tu portal de cliente: https://portal.laudex.mx/login.",
-    "Informacion sobre renovaciones": "Puedes obtener información sobre renovaciones en nuestro portal: https://laudex.mx/renovaciones/ o escribiendo a renovaciones@laudex.mx.",
     "Liquidar" : "💚 ¡Gracias por dejarnos ser parte de tu camino y permitirnos apoyarte en tus metas! 💚\n\nPor favor, para esta solicitud debes comunicarte con atención al cliente:\n\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx\n\n_Mis compañeras están disponibles de lunes a viernes de 8 hrs a 20 hrs y sábados de 10 a 14 hrs_\n\n_Por favor, contáctalas lo antes posible para que puedan ayudarte_.",
     "Lugar laudex" : "Bosque de Radiatas 42 – PH-02\nCol. Bosques de las Lomas, CDMX, C.P. 05120\n\nhttps://maps.app.goo.gl/sazpAQV6sNmLCJNw6",
+    "Inicio de clases":"📚🎒 Para conocer la fecha exacta de inicio de clases, es necesario que lo verifiques directamente en las plataformas oficiales de tu universidad. 🏫✅\n\n💡 En Laudex somos una institución financiera 💳 que te apoya con tu financiamiento educativo, pero no gestionamos los calendarios académicos.\n\nSi tienes alguna otra duda sobre tu crédito, ¡estamos aquí para ayudarte! 😊📩",
     "Monto que necesitas": "El monto que necesitas solicitar *dependerá totalmente de tus necesidades y de los costos de tu universidad* 📚\n\nTe recomiendo considerar lo siguiente:\n\nSolicita el monto que cubra el total de tu periodo actual o el nuevo periodo.\nRecuerda que *Laudex no realiza pagos mensuales, sino que cubre el pago total del periodo*.\n\nPor ejemplo, si tu periodo es semestral, el crédito cubrirá todas las mensualidades juntas 💸",
     "Politica de pagos": "Todos los pagos se realizan únicamente el primer día de cada mes. Esta política nos ayuda a mantener un proceso de gestión eficiente. Te recomendamos que planifiques tus pagos en función de esta fecha. ¡Gracias por tu comprensión!",
     "Portal" : "¡Conoce el nuevo portal del cliente! 📱\nEn portal.laudex.mx puedes acceder a toda la información de tu crédito en un solo lugar:\n- Fecha de tus pagos 📅\n- Cómo y dónde realizar tus pagos 💳\n- Estados de cuenta detallados 📂\n- Historial de tus últimos pagos 🧾\n- Monto de tu adeudo 💰\n- Y mucho más.\n\n¿Tienes dudas o necesitas ayuda? Estamos aquí para apoyarte:\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx\n\n💡 _Estamos disponibles de lunes a viernes de 8:00 a 20:00 hrs y sábados de 9:00 a 14:00 hrs_.",
@@ -70,6 +70,7 @@ respuestas = {
     "Reflejo de pagos": "Tu pago se refleja en un plazo de 24 horas hábiles ⏳\n\nPara más información contacta a atención a clientes al\n- Teléfono: 5540407940\n- WhatsApp: 5593036268\n- Correo: atencion@laudex.mx",
     "Respaldo Economico": "Buenas noticias! 🎓✨ Si te indicamos que debías comunicarte con alguien para liberar tus materias, *significa que el proceso con Laudex ya concluyó exitosamente*. ✅\n\n📚 Ahora el siguiente paso depende directamente de UNITEC. A veces, por la carga de trabajo, el personal universitario puede tardar un poco en responder, así que te pedimos tener un poco de paciencia. 🕒💬\n\n⚠️ Si después de unos días no recibes respuesta, te sugerimos acudir directamente a tu campus o comunicarte nuevamente con ellos. 🏫📞\n\n_Lamentablemente, este proceso ya no está en manos de Laudex, sino que corresponde completamente a UNITEC_.\n\n¡Ánimo! Seguro pronto tendrás una respuesta. 😊🚀",
     "Saludo inicial": "*¿Cómo puedo ayudarte?*",
+    "Saldo a favor en Universidad": "Si tienes saldo a favor con tu universidad y deseas utilizarlo, es importante que te comuniques directamente con tu institución educativa. 🏫\n\nEn Laudex funcionamos de manera similar a una tarjeta de crédito 💳: nosotros realizamos el depósito a tu universidad por el monto que nos solicitas, pero ese dinero ingresa directamente a la cuenta de tu universidad, la cual es una empresa independiente a Laudex.\n\nPor ello, es fundamental que te acerques con ellos para que, desde su propio sistema, puedan explicarte cómo aplicar ese saldo a favor de la mejor manera. ✅",
     "Tiempo de respuesta renovaciones": "La respuesta a tu trámite será enviada a tu correo electrónico en un plazo máximo de 72 horas.\n\nTe pedimos, por favor, estar pendiente de tu bandeja de entrada y también revisar tu carpeta de spam o correos no deseados. ✉️\n\nSi después de este tiempo no has recibido respuesta, por favor responde *Pasaron más de 72 horas*, y con gusto revisaremos tu solicitud a detalle. 🕵",
     "Que duda": "Con gusto puedo ayudarte, aquí estamos para resolver tus dudas. 😊\n\nPara poder ayudarte mejor, ¿me puedes contar un poquito más? Por ejemplo: ¿es sobre pagos, renovaciones, documentos, o algo más? 🎓💰",
 }
@@ -198,6 +199,12 @@ def procesar_mensaje(msg, from_number):
                 "asignar": True,
                 "fin": False
             }
+        elif categoria == "Razon no renovacion":
+            return {
+                "msg_response": "🎓💙 Tu crédito Laudex tiene la finalidad de ayudarte a cumplir tu sueño académico.\n\nSomos tu respaldo económico durante toda tu vida como estudiante, acompañándote en cada paso para que nada detenga tu camino hacia el éxito. 🚀📚\n\nSi has decidido no renovar, nos gustaría mucho entender por qué. 🧐 Tu opinión es muy valiosa para nosotros, ya que nos ayuda a mejorar y seguir siendo parte del logro de más historias como la tuya. 🌟\n\n¿Podrías compartirnos las razones, por favor? 🫶 ¡Estamos aquí para apoyarte siempre! 🤗",
+                "asignar": True,
+                "fin": False
+            }
         else:
             # Respuesta para categorías desconocidas
             return {
@@ -266,7 +273,7 @@ def webhook():
         if step == 0:
             user_states[from_number]["step"] = 1
             return jsonify({
-                "msg_response": f"Hola *{first_name}*\n\nBienvenido a Renovaciones Laudex 💰📚\n\n*¿En qué podemos ayudarte?*\n\n1. Iniciar renovación\n2. Seguimiento a solicitud\n3. Dudas sobre pagos\n4. Otra consulta",
+                "msg_response": f"Hola *{first_name}*\n\nBienvenido a Renovaciones Laudex 💰📚\n\n*¿En qué podemos ayudarte?*\n\n1. Iniciar renovación\n2. Otra consulta",
                 "asignar": False,
                 "fin": False
             }), 200
