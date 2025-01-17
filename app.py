@@ -286,19 +286,10 @@ def webhook():
                     "asignar": False,
                     "fin": False
                 }), 200
-            elif msg == "2" or msg == "3" or msg == "4" or msg == "2. Seguimiento a solicitud" or msg == "3. Dudas sobre pagos" or msg == "4. Otra consulta" or msg == "Seguimiento a solicitud" or msg == "Dudas sobre pagos" or msg == "Otra consulta":                
-                user_states[from_number]["step"] = 9
-                return jsonify({
-                    "msg_response": f"Hola *{first_name}* soy *Reno* 🦌\n\nTu asistente virtual de Renovaciones Laudex\n\n*¿Cómo puedo ayudarte?*",
-                    "asignar": False,
-                    "fin": False
-                }), 200
             else:
-                return jsonify({
-                    "msg_response": "Responde con una opción válida:\n1. Iniciar renovación\n2. Seguimiento a solicitud\n3. Dudas sobre pagos\n4. Otra consulta",
-                    "asignar": False,
-                    "fin": False
-                }), 200
+                user_states[from_number]["step"] = 9
+                response = procesar_mensaje(msg, from_number)
+                return jsonify(response), 200
         elif step == 2:
             if msg == "1" or msg == "UNITEC" or msg == "unitec" or msg == "Unitec" or msg == "1. UNITEC":                
                 user_states[from_number]["step"] = 9
